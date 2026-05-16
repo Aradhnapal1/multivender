@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Vendor E-Commerce | 40-Page Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #e9ecef;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .page {
+            background: white;
+            width: 210mm;
+            height: 297mm;
+            /* Standard A4 Size Portrait */
+            margin: 0 auto 30px auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            box-sizing: border-box;
+            page-break-after: always;
+            position: relative;
+            border-top: 10px solid #0d6efd;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 30px;
+            right: 50px;
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: bold;
+        }
+
+        .title {
+            font-size: 26px;
+            color: #212529;
+            border-bottom: 3px solid #0d6efd;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .content {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #495057;
+            text-align: justify;
+        }
+
+        .content ul {
+            margin-left: 20px;
+        }
+
+        .content li {
+            margin-bottom: 15px;
+        }
+
+        /* Proper image scaling class to keep screenshots inside the page */
+        .screenshot-img {
+            display: block;
+            max-width: 100%;
+            max-height: 600px;
+            margin: 20px auto 0 auto;
+            object-fit: contain;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .print-btn:hover {
+            background: #c82333;
+        }
+
+        /* Print CSS to make exactly 40 pages clean */
+        @media print {
+            body {
+                background: white;
+                margin: 0;
+                padding: 0;
+            }
+
+            .page {
+                box-shadow: none;
+                margin: 0;
+                border: none;
+                border-top: 10px solid #0d6efd;
+                height: 100vh;
+            }
+
+            .print-btn {
+                display: none;
+            }
+
+            @page {
+                margin: 0; /* Removes browser default header (Title/Date) and footer (URL) */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="print-btn" onclick="window.print()">📄 Download 40-Page Normal PDF</button>
+
+    <div id="pdf-container"></div>
+
+    <script>
+        const slides = [
+            {
+                title: "Multi-Vendor E-Commerce Platform",
+                content: `<br><br><br><h2 style='text-align:center; font-size: 40px;'>Project Documentation & Report</h2>
+                          <p style='text-align:center; font-size: 24px;'>A comprehensive B2C/B2B marketplace solution connecting buyers, sellers, and administrators.</p>
+                          <br><br><br><h4 style='text-align:center;'>Submitted By: [Your Name]</h4>
+                          <h4 style='text-align:center;'>College: [Your College Name]</h4>`
+            },
+            {
+                title: "Index / Table of Contents",
+                content: `<table style="width: 100%; border-collapse: collapse; font-size: 13.5px; border: 2px solid #000; margin-top: 0px;">
+                        <thead>
+                            <tr style="background: #f1f2f6; border-bottom: 2px solid #000;">
+                                <th style="border-right: 2px solid #000; padding: 4px; text-align: center; width: 8%;">Sr. No.</th>
+                                <th style="border-right: 2px solid #000; padding: 4px; text-align: left; width: 77%;">Topic / Particulars</th>
+                                <th style="padding: 4px; text-align: center; width: 15%;">Page No.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">1</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Introduction</strong></td><td style="padding: 3px; text-align: center;">3</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">2</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Problem Statement</strong></td><td style="padding: 3px; text-align: center;">4</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">3</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Proposed Solution</strong></td><td style="padding: 3px; text-align: center;">5</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">4</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Scope of the Project</strong></td><td style="padding: 3px; text-align: center;">6</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">5</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Target Audience</strong></td><td style="padding: 3px; text-align: center;">7</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">6</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Technology Stack Overview</strong></td><td style="padding: 3px; text-align: center;">8</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">7</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Frontend Technologies</strong></td><td style="padding: 3px; text-align: center;">9</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">8</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Backend Technologies (.NET)</strong></td><td style="padding: 3px; text-align: center;">10</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">9</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Database Technology (PostgreSQL)</strong></td><td style="padding: 3px; text-align: center;">11</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">10</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>System Architecture</strong></td><td style="padding: 3px; text-align: center;">12</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">11</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Folder Structure & Code Uses</strong></td><td style="padding: 3px; text-align: center;">13</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">12</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Security & Authentication</strong></td><td style="padding: 3px; text-align: center;">14</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">13</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Role-Based Access Control (RBAC)</strong></td><td style="padding: 3px; text-align: center;">15</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">14</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Superadmin Module Features</strong></td><td style="padding: 3px; text-align: center;">16</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">15</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Vendor Dashboard Features</strong></td><td style="padding: 3px; text-align: center;">17</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">16</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Customer UI Features</strong></td><td style="padding: 3px; text-align: center;">18</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">17</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Cart Management Workflow</strong></td><td style="padding: 3px; text-align: center;">19</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">18</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Checkout & Order Generation</strong></td><td style="padding: 3px; text-align: center;">20</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">19</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Payment Gateway Integration</strong></td><td style="padding: 3px; text-align: center;">21</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">20</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Order Fulfillment Workflow</strong></td><td style="padding: 3px; text-align: center;">22</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">21</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Automated PDF Invoice Generation</strong></td><td style="padding: 3px; text-align: center;">23</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">22</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Database Design (ER Model)</strong></td><td style="padding: 3px; text-align: center;">24</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">23</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Key Database Tables Description</strong></td><td style="padding: 3px; text-align: center;">25</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">24</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>API Integration Example</strong></td><td style="padding: 3px; text-align: center;">26</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">25</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Handling Product Images</strong></td><td style="padding: 3px; text-align: center;">27</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">26</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Managing System Performance</strong></td><td style="padding: 3px; text-align: center;">28</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">27</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Platform Advantages</strong></td><td style="padding: 3px; text-align: center;">29</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">28</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Screen Show: Website Homepage</strong></td><td style="padding: 3px; text-align: center;">30</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">29</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Screen Show: Vendor Dashboard</strong></td><td style="padding: 3px; text-align: center;">31</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">30</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Screen Show: Superadmin Dashboard</strong></td><td style="padding: 3px; text-align: center;">32</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">31</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Screen Show: Database (PostgreSQL)</strong></td><td style="padding: 3px; text-align: center;">33</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">32</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Screen Show: Main Coding (Backend)</strong></td><td style="padding: 3px; text-align: center;">34</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">33</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Screen Show: Main Coding (Frontend)</strong></td><td style="padding: 3px; text-align: center;">35</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">34</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Screen Show: Main Coding (Payment Gateway)</strong></td><td style="padding: 3px; text-align: center;">36</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">35</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Screen Show: Product Details</strong></td><td style="padding: 3px; text-align: center;">37</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">36</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Screen Show: Cart & Checkout UI</strong></td><td style="padding: 3px; text-align: center;">38</td></tr>
+                            <tr style="border-bottom: 1px solid #ccc;"><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">37</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Screen Show: Order Tracking & Invoice</strong></td><td style="padding: 3px; text-align: center;">39</td></tr>
+                            <tr><td style="border-right: 2px solid #000; padding: 3px; text-align: center;">38</td><td style="border-right: 2px solid #000; padding: 3px;"><strong>Conclusion & Future Scope</strong></td><td style="padding: 3px; text-align: center;">40</td></tr>
+                        </tbody>
+                      </table>`
+            },
+            {
+                title: "1. Introduction",
+                content: `<p>A Multi-Vendor E-commerce platform acts as a digital mall. Instead of a single owner selling products, it allows multiple independent sellers (vendors) to register, set up their own digital storefronts, and sell products to a unified customer base. The platform owner (Superadmin) manages the infrastructure and earns revenue through commissions.</p><p>In the modern digital era, platforms like Amazon, Flipkart, and Etsy have revolutionized the way people shop. They do not own all the inventory they sell; instead, they provide a robust technological infrastructure that connects millions of buyers with thousands of sellers. This project aims to replicate that highly scalable architecture using modern web technologies. The core advantage of this model is scalability and risk reduction for the platform owner.</p><p>This detailed documentation provides a comprehensive technical and functional overview of the platform, detailing its backend architecture in .NET Core, relational database design in PostgreSQL, role-based access controls, and core workflows including cart management and secure payment processing.</p>`
+            },
+            {
+                title: "2. Problem Statement",
+                content: `<p>Building an individual e-commerce website is highly expensive. Small business owners, local retailers, and wholesale manufacturers often lack the technical expertise and financial budget required to build, host, and continuously market their own standalone e-commerce applications.</p><p>Furthermore, from a customer's perspective, shopping across 50 different standalone websites is frustrating. Customers have to create multiple accounts, manage different tracking links, and trust various unknown payment gateways. A single-vendor website also suffers from limited product variety, making it difficult to retain customers over a long period. Centralized inventory management for thousands of different product categories is logistically impossible for a single entity, creating a massive gap in the market for a unified solution.</p>`
+            },
+            {
+                title: "3. Proposed Solution",
+                content: `<p>To bridge this gap, we propose the development of a centralized <strong>Multi-Vendor Marketplace</strong>. This platform provides sellers with a ready-made "Vendor Dashboard" where they can set up their store at zero initial cost. They simply register, upload their products, and start selling.</p><p>For the Superadmin, the platform provides a comprehensive governance dashboard to verify sellers, approve master categories, and monitor platform health, ensuring high customer trust. For the Customers, it offers a seamless, mobile-responsive UI/UX with advanced search filtering, a unified shopping cart, and secure automated payment gateway integrations. This solution effectively democratizes e-commerce for small businesses while providing maximum convenience to buyers.</p>`
+            },
+            {
+                title: "4. Scope of the Project",
+                content: `<p>The scope of this project is vast and covers end-to-end e-commerce operations. Key functionalities include:</p><ul><li><strong>Vendor Governance:</strong> Superadmin verifies business details and approves vendors to prevent fraud.</li><li><strong>Dynamic Catalogs:</strong> Superadmin controls the master categories (e.g., Electronics, Clothing) to keep the database structured, while vendors map their products to these categories.</li><li><strong>Real-time Stock Management:</strong> The system automatically decrements stock upon successful order placement and dynamically disables the "Add to Cart" button when stock reaches zero.</li><li><strong>Secure Checkout:</strong> Encrypted payment processing utilizing industry-standard Payment Gateways.</li><li><strong>Automated PDF Invoices:</strong> Generating downloadable tax invoices on the fly using JavaScript libraries.</li></ul>`
+            },
+            {
+                title: "5. Target Audience",
+                content: `<p>The platform is designed to cater to three distinct types of users, each with their own specific needs and interfaces:</p><ul><li><strong>Buyers (Customers):</strong> The general public looking for competitive prices, product variety, and a single, reliable checkout experience. They benefit from a massive catalog and unified order tracking.</li><li><strong>Sellers (Vendors):</strong> Local businesses, artisans, wholesalers, and manufacturers who want to expand their digital footprint globally without the overhead of maintaining an IT infrastructure.</li><li><strong>Administrators (Superadmin):</strong> The platform owners who manage the marketplace ecosystem. Their primary goal is to monetize the platform via a commission-based business model, ensuring platform security and resolving disputes.</li></ul>`
+            },
+            {
+                title: "6. Technology Stack Overview",
+                content: `<p>This project utilizes a modern, robust, and highly scalable N-Tier architecture. The technology stack was carefully selected to ensure high performance, security, and maintainability.</p><ul><li><strong>Frontend Layer:</strong> HTML5, CSS3, JavaScript (ES6), and Bootstrap 5 for a responsive, mobile-first User Interface.</li><li><strong>Backend API Layer:</strong> ASP.NET Core Web API (C#) for high-performance server-side processing, routing, and business logic execution.</li><li><strong>Database Layer:</strong> PostgreSQL, an advanced open-source relational database, managed via Entity Framework Core (ORM).</li><li><strong>Security:</strong> JWT (JSON Web Tokens) for stateless API authentication and BCrypt/Argon2 for password hashing.</li><li><strong>External Integrations:</strong> Stripe / Razorpay for payment processing.</li></ul>`
+            },
+            {
+                title: "7. Frontend Technologies",
+                content: `<p>The presentation layer is responsible for the look and feel of the platform. It handles user inputs and communicates dynamically with the backend APIs.</p><ul><li><strong>HTML5 & CSS3:</strong> Provide the semantic structure and custom styling, ensuring accessibility and cross-browser compatibility.</li><li><strong>Bootstrap 5:</strong> A powerful CSS framework utilized for its responsive grid system and pre-built UI components like Modals, Offcanvas carts, and Tooltips.</li><li><strong>JavaScript (Fetch API):</strong> Handles asynchronous requests to the .NET backend without reloading the page, creating a Single Page Application (SPA) like smooth experience.</li><li><strong>External Libraries:</strong> SweetAlert2 is used for beautiful interactive popup alerts, and Swiper.js is implemented for touch-enabled product image carousels.</li></ul>`
+            },
+            {
+                title: "8. Backend Technologies (.NET)",
+                content: `<p>The core engine of the platform is built using <strong>ASP.NET Core Web API</strong> using C#. This framework was chosen for its enterprise-grade security and exceptional performance handling concurrent requests.</p><p>The backend follows the Repository Design Pattern, which cleanly separates the business logic (Controllers & Services) from the data access logic. All communication between the frontend client and the server happens via stateless RESTful endpoints using JSON payloads. .NET Core's built-in Dependency Injection (DI) manages object lifecycles, and Data Annotations ensure strict server-side validation before any data touches the database, protecting against SQL injection and cross-site scripting attacks.</p>`
+            },
+            {
+                title: "9. Database Technology (PostgreSQL)",
+                content: `<p>Data persistence is handled by <strong>PostgreSQL</strong>, a highly reliable, ACID-compliant relational database system. In an e-commerce ecosystem, transactional integrity is critical—when a payment is processed, the order status and inventory stock must update simultaneously without failure.</p><p>Postgres excels at handling complex SQL JOIN operations, which are heavily used in this project to link <code>Users</code>, <code>Vendors</code>, <code>Products</code>, <code>Categories</code>, and <code>OrderItems</code>. The schema is managed entirely through code using <strong>Entity Framework (EF) Core</strong> via Code-First Migrations, allowing the database structure to evolve seamlessly as new features are developed.</p>`
+            },
+            {
+                title: "10. System Architecture",
+                content: `<p>The system follows a scalable <strong>N-Tier Client-Server Architecture</strong>. This separation of concerns allows the frontend and backend to be scaled independently.</p><ul><li><strong>1. Presentation Layer (Client):</strong> The web browser running HTML, CSS, and JS. It captures user events (e.g., clicking "Add to Cart") and triggers API calls.</li><li><strong>2. Application Layer (Server):</strong> Kestrel Server hosting the .NET Core Web APIs. It intercepts the HTTP requests, validates JWT tokens, executes business rules, and communicates with the DB.</li><li><strong>3. Data Layer (Database):</strong> PostgreSQL database storing structured application data.</li></ul><p>Because the architecture is stateless (using JWT), it is "cloud-ready" and can be deployed behind a load balancer easily.</p>`
+            },
+            {
+                title: "11. Folder Structure & Code Uses",
+                content: `<p>To maintain a clean and manageable codebase, the project is organized into distinct directories based on user roles and features:</p><ul><li><code>/superadmin/</code>: Contains HTML/JS files strictly for the Admin Panel. Scripts here handle global platform settings, category management, and vendor approvals.</li><li><code>/vender/</code>: Houses the Vendor dashboard codebase. It secures product uploads, manages individual seller order logic, and tracks seller analytics.</li><li><code>/assets/</code> & <code>/images/</code>: Centralized folders for common CSS stylesheets, shared JavaScript files (like cart handling), and static visual media.</li><li><code>/.NET API Project/</code>: The backend code containing Models, Controllers, and database context configurations.</li></ul>`
+            },
+            {
+                title: "12. Security & Authentication",
+                content: `<p>Security is a paramount concern for an e-commerce platform handling financial transactions and user data.</p><ul><li><strong>JWT (JSON Web Tokens):</strong> Used for stateless authentication. Upon successful login, the .NET server issues a cryptographically signed token. This token is stored in the browser's <code>localStorage</code> and attached as a <code>Bearer Token</code> in the headers of all subsequent API requests.</li><li><strong>Password Security:</strong> Passwords are never stored in plain text. They are securely hashed and salted using industry-standard algorithms before saving to Postgres.</li><li><strong>API Protection:</strong> The <code>[Authorize]</code> attribute in .NET routes ensures that unauthorized users receive a 401 Unauthorized response if they attempt to access secure data.</li></ul>`
+            },
+            {
+                title: "13. Role-Based Access Control (RBAC)",
+                content: `<p>The platform heavily utilizes RBAC to ensure users only see data and perform actions relevant to their permissions.</p><ul><li><strong>Superadmin (Role ID: 1):</strong> Complete platform access. Can manage master categories, view global orders, approve/reject vendors, and suspend fraudulent accounts.</li><li><strong>Vendor (Role ID: 2):</strong> Access is strictly scoped to their own store via <code>VendorId</code>. They can manage their own products, view specific orders assigned to them, and update their payout profiles. They cannot edit other vendors' data.</li><li><strong>Customer (Role ID: 3):</strong> Access is restricted to their personal shopping cart, wishlist, profile updates, and tracking their own order history.</li></ul>`
+            },
+            {
+                title: "14. Superadmin Module Features",
+                content: `<p>The Superadmin dashboard acts as the command center for platform governance and monitoring.</p><ul><li><strong>Analytics Dashboard:</strong> Displays high-level metrics including total platform revenue, total active vendors, total customers, and pending orders, visualized using interactive charts.</li><li><strong>Vendor Management:</strong> When a new seller registers, their account is "Pending". The Superadmin reviews their business credentials and manually Approves them to maintain quality control.</li><li><strong>Category Management:</strong> To prevent vendors from creating duplicate or messy categories, the Superadmin strictly manages the Global Master Category list (e.g., Electronics > Smartphones). Vendors map their products to these pre-defined categories.</li></ul>`
+            },
+            {
+                title: "15. Vendor Dashboard Features",
+                content: `<p>The Vendor Dashboard is a dedicated portal exclusively for approved sellers, empowering them to run their digital business efficiently.</p><ul><li><strong>Store Setup & Profile:</strong> Vendors can upload their brand logo, configure business details, and input bank account information for receiving payouts from the platform.</li><li><strong>Product Uploads:</strong> A comprehensive form allows vendors to perform CRUD operations on their products. They can upload a main image, multiple gallery images, set MRP pricing, apply discount percentages, and define SKU codes.</li><li><strong>Sales Analytics:</strong> A personalized dashboard showing revenue graphs, top-selling items, and a list of recent customer orders assigned specifically to their shop.</li></ul>`
+            },
+            {
+                title: "16. Customer UI Features",
+                content: `<p>The public-facing e-commerce storefront is designed to maximize conversion rates and provide a flawless shopping experience.</p><ul><li><strong>Product Discovery:</strong> Features an attractive Hero Banner, Flash Sales sections, and Top Trending grids. The UI is built with Bootstrap 5, ensuring it looks perfect on mobile phones, tablets, and desktops.</li><li><strong>Search & Filtering:</strong> Customers can use a dynamic search bar to find products quickly. A sidebar allows complex filtering by Category, Brand, Price Range, Colors, and Sizes, with API pagination handling thousands of records smoothly.</li><li><strong>Product Detail Page (PDP):</strong> Offers high-quality image zooming, rich text product descriptions, and interactive variant selection buttons.</li></ul>`
+            },
+            {
+                title: "17. Cart Management Workflow",
+                content: `<p>The shopping cart utilizes asynchronous JavaScript to provide a fast, non-blocking user experience.</p><p><strong>Add to Cart:</strong> When a user clicks the "Add to Cart" button, a POST request is sent to the <code>/api/cart/add</code> endpoint containing the <code>ProductId</code> and <code>Quantity</code>. Instead of reloading the page, an Offcanvas UI (a sliding side-panel) opens instantly, displaying the updated cart contents.</p><p><strong>Calculations:</strong> The .NET backend securely calculates the subtotal by fetching real-time prices directly from the database (preventing frontend price tampering), applies relevant taxes, calculates estimated delivery charges, and returns the updated total back to the JavaScript UI for rendering.</p>`
+            },
+            {
+                title: "18. Checkout & Order Generation",
+                content: `<p>The checkout process represents the critical conversion point of the platform.</p><p><strong>Authentication Check:</strong> If an anonymous user attempts to checkout, JavaScript intercepts the action, triggers a SweetAlert, and prompts them to log in or register via a modal.</p><p><strong>Order Generation:</strong> The user provides billing and shipping addresses. Upon clicking "Place Order", the backend generates a unique Order ID and saves the master record in the <code>Orders</code> table with a status of 'Pending'. Simultaneously, individual items are saved in the <code>OrderItems</code> table, linking each product back to its specific <code>VendorId</code> for future payout calculations.</p>`
+            },
+            {
+                title: "19. Payment Gateway Integration",
+                content: `<p>Handling money securely is the most critical e-commerce function. We integrate robust third-party Payment Gateways (like Razorpay or Stripe) to process Credit Card, Debit Card, and UPI transactions.</p><p><strong>Step 1:</strong> User clicks 'Pay Now'. The frontend JavaScript sends the final Order Total to the .NET Backend.</p><p><strong>Step 2:</strong> The Backend securely contacts the Payment Gateway's API using private API keys. It creates an 'Order' on the gateway's server and receives an external <code>GatewayOrderID</code>.</p><p><strong>Step 3:</strong> The Frontend uses this ID to initialize the Gateway's JavaScript SDK, opening the secure payment modal where the user enters their card details.</p>`
+            },
+            {
+                title: "20. Order Fulfillment Workflow",
+                content: `<p>After a successful payment, the fulfillment lifecycle begins.</p><p><strong>Verification:</strong> The Gateway sends a success cryptographic signature to the frontend, which is forwarded to the .NET backend. The backend verifies this signature using a Secret Key. If valid, the PostgreSQL DB updates the order status to 'PAID'.</p><p><strong>Vendor Routing:</strong> Because a single customer order might contain products from <em>Vendor A</em> and <em>Vendor B</em>, the system automatically splits the order visually in the vendor dashboards. Vendors see only their specific items.</p><p><strong>Status Updates:</strong> Vendors manually update the status of their items from <em>Processing -> Shipped -> Delivered</em>, which the customer can view live on their 'Order Tracking' page.</p>`
+            },
+            {
+                title: "21. Automated PDF Invoice Generation",
+                content: `<p>Providing a formal tax invoice is mandatory for e-commerce transactions. This feature is fully automated within the platform.</p><p>Invoices are generated dynamically on the client-side using the <strong>jsPDF</strong> library. When a customer or admin clicks the "Download Invoice" button, a JavaScript function fetches the comprehensive order details, including the items, prices, shipping address, and payment status from the API.</p><p>The script then formats this data into a structured layout, calculates subtotals and taxes, overlays the platform's logo as a header, and triggers an automatic <code>.pdf</code> file download directly in the user's browser, saving server-side PDF rendering costs.</p>`
+            },
+            {
+                title: "22. Database Design (ER Model)",
+                content: `<p>The relational database is meticulously designed in PostgreSQL to ensure data normalization and integrity using Primary Keys (PK) and Foreign Keys (FK).</p><p><strong>Core Entities:</strong> The ecosystem relies on tables like <code>Users</code>, <code>Roles</code>, <code>VendorProfiles</code>, <code>Products</code>, <code>Categories</code>, <code>Orders</code>, and <code>OrderItems</code>.</p><p><strong>Relationships:</strong> The schema utilizes One-to-Many relationships extensively. For example, One Vendor can have Many Products. One Master Category can have Many Products. Most importantly, One Order can have Many OrderItems, and each OrderItem contains a FK pointing to the specific Vendor who sold it, which is the backbone of the multi-vendor commission calculation.</p>`
+            },
+            {
+                title: "23. Key Database Tables Description",
+                content: `<ul><li><code>Users Table:</code> Stores authentication data: Id (PK), FullName, Email, PasswordHash, PhoneNumber, RoleId (FK), CreatedAt.</li><li><code>Products Table:</code> Stores catalog data: Id (PK), VendorId (FK), CategoryId (FK), Name, Description, Price, DiscountPrice, StockQuantity, MainImage URL, IsActive.</li><li><code>Orders Table:</code> Stores transaction data: Id (PK), CustomerId (FK), TotalAmount, PaymentStatus, OrderStatus, ShippingAddress.</li><li><code>OrderItems Table:</code> Bridges Orders and Products: Id (PK), OrderId (FK), ProductId (FK), VendorId (FK), Quantity, PriceAtTimeOfPurchase. Storing the price at the time of purchase is crucial for historical accuracy if product prices change later.</li></ul>`
+            },
+            {
+                title: "24. API Integration Example",
+                content: `<p>Frontend JavaScript acts as the engine driving the UI, communicating seamlessly with the .NET backend.</p><p>We extensively use <code>async/await</code> and the modern <code>fetch()</code> API. For example, to load products, a function calls <code>fetch('/api/products/list')</code>. The headers include <code>Authorization: Bearer &lt;token&gt;</code> to verify the user's identity.</p><p>The .NET backend responds with a structured JSON array. The JavaScript parses this JSON, iterates over the array using <code>.map()</code>, constructs dynamic HTML template literals (Cards or Table rows), and injects them directly into the DOM using <code>innerHTML</code>, resulting in lightning-fast UI updates.</p>`
+            },
+            {
+                title: "25. Handling Product Images",
+                content: `<p>Image handling requires a specific workflow to manage file uploads efficiently without bloating the database.</p><p>When a vendor uploads a new product, images are appended to a <code>FormData</code> object and transmitted to the API with a <code>multipart/form-data</code> content type. The .NET backend intercepts this file stream, generates a unique filename (using GUIDs to prevent overwriting), and saves the physical file to a dedicated server directory (e.g., <code>/wwwroot/uploads/products/</code>).</p><p>Only the relative file path (URL) is saved in the PostgreSQL <code>Products</code> table. This keeps database queries exceptionally fast and allows the frontend to easily construct the <code>&lt;img src="..."&gt;</code> tags.</p>`
+            },
+            {
+                title: "26. Managing System Performance",
+                content: `<p>To ensure the platform remains fast even with thousands of products and concurrent users, several performance optimization techniques are implemented.</p><ul><li><strong>Pagination:</strong> The <code>/api/products/list</code> endpoint does not return all products at once. It uses Cursor or Offset pagination to return only 20-50 products per request. As the user clicks "Next Page", the subsequent batch is fetched.</li><li><strong>Database Indexing:</strong> Frequently searched columns in PostgreSQL, such as <code>CategoryId</code>, <code>VendorId</code>, and product <code>Name</code>, are indexed, reducing query lookup times from milliseconds to microseconds.</li><li><strong>Client-side Caching:</strong> Frequently accessed non-sensitive data can be temporarily stored in the browser's <code>sessionStorage</code> to prevent redundant API calls.</li></ul>`
+            },
+            {
+                title: "27. Platform Advantages",
+                content: `<p>The Multi-Vendor Marketplace model offers distinct advantages over traditional e-commerce operations, making it a highly lucrative business model.</p><ul><li><strong>For Vendors:</strong> Provides a ready-made audience and technological infrastructure. Zero maintenance cost for servers or payment gateways, allowing them to focus purely on sourcing and shipping products. Secure, automated payouts build trust.</li><li><strong>For Customers:</strong> Offers massive product variety under one roof, highly competitive pricing driven by vendor competition, a single unified cart checkout experience, and reliable platform-level customer support.</li><li><strong>For the Superadmin:</strong> Generates automated revenue through vendor commissions or subscription fees. Highly scalable business model since they do not need to invest capital in purchasing inventory or managing warehouses.</li></ul>`
+            },
+            {
+                title: "28. Screen Show: Website Homepage",
+                content: `<p>The customer landing page showing promotional banners, master categories, and top trending products.</p><img src="./mca/1.png" class="screenshot-img" alt="Website Homepage">` 
+            },
+            {
+                title: "29. Screen Show: Vendor Dashboard",
+                content: `<p>Analytics overview, total sales, recent order lists, and product management tools for the individual seller.</p><img src="./mca/2.png" class="screenshot-img" alt="Vendor Dashboard">` 
+            },
+            {
+                title: "30. Screen Show: Superadmin Dashboard",
+                content: `<p>Global platform overview, master category management, platform revenue tracking, and vendor approval queues.</p><img src="./mca/3.png" class="screenshot-img" alt="Superadmin Dashboard">` 
+            },
+            {
+                title: "31. Screen Show: Database (PostgreSQL)",
+                content: `<p>PgAdmin interface showing the relational database tables (Users, Products, Orders, OrderItems) and Foreign Key mappings.</p><img src="./mca/4.png" class="screenshot-img" alt="Database">` 
+            },
+            {
+                title: "32. Screen Show: Main Coding (Backend)",
+                content: `<p>.NET Core Web API Controller code showcasing JWT authentication <code>[Authorize]</code>, routing, and Entity Framework Core queries.</p><img src="./mca/5.png" class="screenshot-img" alt="Backend Code">` 
+            },
+            {
+                title: "33. Screen Show: Main Coding (Frontend)",
+                content: `<p>JavaScript Fetch API implementation showing asynchronous data retrieval and dynamic DOM manipulation (e.g., rendering product cards).</p><img src="./mca/6.png" class="screenshot-img" alt="Frontend Code">` 
+            },
+            {
+                title: "34. Screen Show: Main Coding (Payment Gateway)",
+                content: `<p>Implementation of the Razorpay/Stripe SDK integration, capturing the checkout payload, and verifying the secure payment signature.</p><img src="./mca/7.png" class="screenshot-img" alt="Payment Gateway">` 
+            },
+            {
+                title: "35. Screen Show: Product Details",
+                content: `<p>The Product Detail Page (PDP) showcasing high-quality images, descriptions, variant selection (size/color), and stock availability.</p><img src="./mca/8.png" class="screenshot-img" alt="Product Details">` 
+            },
+            {
+                title: "36. Screen Show: Cart & Checkout UI",
+                content: `<p>The dynamic shopping cart review, quantity adjustments, order summary, address entry form, and the final Payment button.</p><img src="./mca/9.png" class="screenshot-img" alt="Cart & Checkout">` 
+            },
+            {
+                title: "37. Screen Show: Order Tracking & Invoice",
+                content: `<p>Customer profile dashboard displaying live order status (Processing, Shipped, Delivered) and the PDF Invoice download feature.</p><img src="./mca/10.png" class="screenshot-img" alt="Order Tracking">` 
+            },
+            {
+                title: "38. Conclusion & Future Scope",
+                content: `<ul><li><strong>Conclusion:</strong> The Multi-Vendor E-Commerce platform provides a robust, highly scalable, and secure marketplace ecosystem successfully utilizing modern web technologies (.NET + PostgreSQL + JavaScript). It solves critical market problems by bridging small vendors with a large customer base seamlessly.</li><li><strong>Future Enhancements:</strong><ul><li>Implementation of AI-based personalized product recommendations based on user browsing history.</li><li>Development of a dedicated native Mobile Application using React Native or Flutter consuming the same .NET APIs.</li><li>Integration of real-time chat support between Customers and Vendors utilizing WebSockets (SignalR).</li><li>Advanced Sales Data Export features in Excel formats for deep accounting analysis.</li></ul></li></ul><br><br>`
+            }
+        ];
+
+        const container = document.getElementById('pdf-container');
+        slides.forEach((slide, index) => {
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'page';
+            pageDiv.innerHTML = `
+                <div class="title">${slide.title}</div>
+                <div class="content">${slide.content}</div>
+                <div class="page-number">Page ${index + 1} of 40</div>
+            `;
+            container.appendChild(pageDiv);
+        });
+    </script>
+</body>
+
+</html>

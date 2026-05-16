@@ -1,0 +1,9 @@
+{
+  "appId": "com.ecommerce.app",
+  "appName": "Ecommerce",
+  "webDir": "www",
+  "server": {
+    "url": "https://darkgrey-pony-365540.hostingersite.com",
+    "cleartext": true
+  }
+}

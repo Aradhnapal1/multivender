@@ -1,0 +1,20 @@
+{
+  "appId": "io.hyperscripts.shop",
+  "appName": "HyperScripts",
+  "webDir": "www",
+  "server": {
+    "url": "https://hyperscripts.io",
+    "cleartext": false,
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0d0d0f",
+      "showSpinner": false
+    }
+  }
+}

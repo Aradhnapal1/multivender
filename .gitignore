@@ -1,0 +1,2 @@
+# Ignore node_modules in Application folder
+Application/node_modules/
