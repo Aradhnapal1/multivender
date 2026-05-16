@@ -190,47 +190,32 @@
                     <ul>
                         <li class="two-grid">
                             <button class="btn">
-                                <svg>
-                                    <use
-                                        xlink:href="https://themes.pixelstrap.net/kartify/assets/svg/grid-option.svg#gridTwo">
-                                    </use>
-                                </svg>
+                               <i class="fa-solid fa-grip"></i>
                             </button>
                         </li>
                         <li class="three-grid">
                             <button class="btn">
-                                <svg>
+                                <!-- <svg>
                                     <use
                                         xlink:href="https://themes.pixelstrap.net/kartify/assets/svg/grid-option.svg#gridThree">
                                     </use>
-                                </svg>
+                                </svg> -->
+                                <i class="fa-solid fa-table-cells"></i>
                             </button>
                         </li>
                         <li class="grid-btn">
                             <button class="btn">
-                                <svg>
-                                    <use
-                                        xlink:href="https://themes.pixelstrap.net/kartify/assets/svg/grid-option.svg#gridFour">
-                                    </use>
-                                </svg>
+                                <i class="fa-solid fa-border-all"></i>
                             </button>
                         </li>
                         <li class="five-grid d-xxl-inline-block d-none active">
                             <button class="btn">
-                                <svg>
-                                    <use
-                                        xlink:href="https://themes.pixelstrap.net/kartify/assets/svg/grid-option.svg#gridFive">
-                                    </use>
-                                </svg>
+                               <i class="fa-solid fa-table-cells-large"></i>
                             </button>
                         </li>
                         <li class="list-btn">
                             <button class="btn">
-                                <svg>
-                                    <use
-                                        xlink:href="https://themes.pixelstrap.net/kartify/assets/svg/grid-option.svg#list">
-                                    </use>
-                                </svg>
+                                 <i class="fa-solid fa-square"></i>
                             </button>
                         </li>
                     </ul>

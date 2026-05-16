@@ -83,6 +83,7 @@ $__pwa_is_home = ($__pwa_script === 'index.php' || $__pwa_script === '' || $__pw
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
 
     <script src="./assets/js/media-url.js"></script>
@@ -103,6 +104,13 @@ $__pwa_is_home = ($__pwa_script === 'index.php' || $__pwa_script === '' || $__pw
     <script src="./assets/js/userJs/trackorder.js"></script>
     <script src="./assets/js/userJs/homecategory.js"></script>
     <!-- <script src="./assets/js/userJs/user-order.js"></script> -->
+     <style>
+        svg {
+    width: 24px;
+    height: 24px;
+    fill: #000;
+}
+     </style>
 
 
 </head>
