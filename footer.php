@@ -797,6 +797,24 @@
   <!-- Script js -->
   <script src="assets/js/script.js"></script>
   <script src="assets/js/pwa-install.js?v=5" defer></script>
+
+  <!-- Capacitor Back Button Handler -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check if running inside a Capacitor app and the App plugin is available
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+        const { App } = window.Capacitor.Plugins;
+
+        App.addListener('backButton', (event) => {
+          if (event.canGoBack) {
+            window.history.back();
+          } else {
+            App.exitApp();
+          }
+        });
+      }
+    });
+  </script>
 </body>
 
 
