@@ -406,7 +406,14 @@ async function loadSavedAddresses() {
 
     if (!response.ok) throw new Error("Failed to fetch addresses");
 
-    const addresses = await response.json();
+    const raw = await response.json();
+    const addresses = Array.isArray(raw)
+      ? raw
+      : (Array.isArray(raw?.data)
+          ? raw.data
+          : (Array.isArray(raw?.data?.data)
+              ? raw.data.data
+              : []));
 
     if (loadingEl) loadingEl.style.display = "none";
 

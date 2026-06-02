@@ -1,5 +1,7 @@
-{/* <script> */}
-// const FALLBACK_IMG = "https://api.workarya.com/"; 
+// Home page category slider (Shop by Categories).
+// This file must never throw when the category section is missing.
+const FALLBACK_IMG = "assets/images/product/placeholder.png";
+
 document.addEventListener("DOMContentLoaded", loadCategories);
 
 async function loadCategories() {
@@ -13,23 +15,40 @@ async function loadCategories() {
         }
 
         const wrapper = document.getElementById("categoryWrapper");
+        if (!wrapper) return;
         wrapper.innerHTML = "";
 
+        const categories = Array.isArray(result)
+            ? result
+            : (Array.isArray(result?.data?.data)
+                ? result.data.data
+                : (Array.isArray(result?.data)
+                    ? result.data
+                    : []));
+
         // Only active top-level parents (children presence ignored)
-        const parents = result.data.filter(c => c.isActive && c.parentId === null);
+        const parents = categories.filter((c) => {
+            if (!c) return false;
+            const active = c.isActive === true || c.isActive === 1 || c.isActive === "true";
+            const isTopLevel = c.parentId == null || c.parentId === "";
+            return active && isTopLevel;
+        });
 
         console.log("=== Active Parent Categories ===");
         parents.forEach(cat => {
             console.log("Name:", cat.name, "Slug:", cat.slug);
 
-            const img = cat.image ? cat.image : FALLBACK_IMG;
+            const catId = cat._id || cat.id;
+            const imgSrc = typeof window.resolveApiMediaUrl === "function"
+                ? window.resolveApiMediaUrl(cat.image, FALLBACK_IMG)
+                : (cat.image ? `https://api.workarya.com/${cat.image}` : FALLBACK_IMG);
+
             // alert(img)
 
-            const catId = cat._id || cat.id;
             const slide = `
                 <div class="swiper-slide">
                     <a href="shop.php?categoryId=${catId}" class="category-box">
-                        <img src="https://api.workarya.com/${img}" class="img-fluid" alt="${cat.name}">
+                        <img src="${imgSrc}" class="img-fluid" alt="${cat.name}">
                         <h4>${cat.name}</h4>
                     </a>
                 </div>
@@ -45,6 +64,7 @@ async function loadCategories() {
 }
 
 function initCategorySwiper() {
+    if (typeof Swiper === "undefined") return;
     new Swiper(".category-box-slide", {
         slidesPerView: 6,
         spaceBetween: 15,

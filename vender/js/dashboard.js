@@ -61,7 +61,7 @@ async function loadVendorDashboard() {
       headers: { Authorization: `Bearer ${token}` },
     });
     const json = await res.json();
-    const data = json?.data || {};
+    const data = json?.data || json || {};
 
     setText("vdTotalRevenue", formatCurrency(data.totalRevenue));
     setText("vdTotalItemsSold", String(data.totalItemsSold ?? 0));

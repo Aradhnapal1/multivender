@@ -40,9 +40,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         try {
+            const userToken = localStorage.getItem("userToken");
+            const headers = { "Content-Type": "application/json" };
+            if (userToken) headers["Authorization"] = `Bearer ${userToken}`;
+
             const res = await fetch(ENQUIRY_API, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify(payload)
             });
 

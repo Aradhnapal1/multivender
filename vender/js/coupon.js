@@ -31,14 +31,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             data.forEach((item, index) => {
+                const couponId = item._id || item.id;
                 couponTable.innerHTML += `
                     <tr>
                         <td>${index + 1}</td>
                         <td><span class="badge bg-dark px-2 py-1">${item.code}</span></td>
                         <td class="text-capitalize">${item.type || item.discountType || 'N/A'}</td>
                         <td>${item.value || item.discountValue || 0}</td>
-                        <td class="table-action"><a href="edit-coupon.php?id=${item.id}" class="action-icon"><i class="mdi mdi-square-edit-outline"></i></a></td>
-                        <td class="table-action"><a href="javascript:void(0);" onclick="deleteCoupon('${item.id}')" class="action-icon"><i class="mdi mdi-trash-can text-danger"></i></a></td>
+                        <td class="table-action"><a href="edit-coupon.php?id=${couponId}" class="action-icon"><i class="mdi mdi-square-edit-outline"></i></a></td>
+                        <td class="table-action"><a href="javascript:void(0);" onclick="deleteCoupon('${couponId}')" class="action-icon"><i class="mdi mdi-trash-can text-danger"></i></a></td>
                     </tr>
                 `;
             });
@@ -104,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(r => r.json())
                 .then(json => {
                     const data = json.data || json || [];
-                    const item = data.find(d => d.id === id);
+                    const item = data.find(d => String(d.id || d._id) === String(id));
                     if (item) {
                         document.getElementById("couponCode").value = item.code || '';
                         document.getElementById("description").value = item.description || '';

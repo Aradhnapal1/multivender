@@ -35,7 +35,7 @@ async function loadSizes() {
                 <tr>
                      <td>${index + 1}</td> <!-- ✅ S.No -->                  
                     <td>${size.name}</td>
-                    <td>${size.description}</td>             
+                    <td>${size.description === 0 || size.description === "0" ? "" : (size.description ?? "")}</td>             
                     <td onclick="editSize('${size._id || size.id}')" style="cursor: pointer;">
                         <i class="mdi mdi-square-edit-outline text-dark fs-3"></i>
                     </td>

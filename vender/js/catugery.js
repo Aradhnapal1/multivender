@@ -161,7 +161,7 @@ if (!window.categoryPageInitialized) {
                     <td>${statusBadge}</td>
 
                     <td class="table-action">
-                        <a href="edit-category.php?id=${item.id}" class="action-icon">
+                        <a href="edit-category.php?id=${item._id || item.id}" class="action-icon">
                             <i class="mdi mdi-square-edit-outline"></i>
                         </a>
                     </td>
@@ -169,7 +169,7 @@ if (!window.categoryPageInitialized) {
                     <td class="table-action">
                         <a href="javascript:void(0);" 
                            class="action-icon delete-category-btn" 
-                           data-id="${item.id}" 
+                           data-id="${item._id || item.id}" 
                            data-name="${displayName}"
                            data-has-children="${item.hasChildren}">
                             <i class="mdi mdi-trash-can text-danger"></i>

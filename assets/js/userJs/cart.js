@@ -155,9 +155,112 @@ function updateCartSummary(data) {
   if (finalTotalEl) finalTotalEl.textContent = `₹${(data.finalTotal || data.subTotal || 0).toFixed(2)}`;
 }
 
+function safeNumber(n, fallback = 0) {
+  const x = Number(n);
+  return Number.isFinite(x) ? x : fallback;
+}
+
+function getCurrentCartItem(productId) {
+  if (!currentCartData || !Array.isArray(currentCartData.items)) return null;
+  const pid = String(productId);
+  return currentCartData.items.find((it) => String(it.productId) === pid) || null;
+}
+
+function getUnitPriceFromItem(item) {
+  if (!item) return 0;
+  const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
+  if (item.total != null && qty > 0) return safeNumber(item.total) / qty;
+  if (item.price != null) return safeNumber(item.price);
+  if (item.currentPrice != null) return safeNumber(item.currentPrice);
+  return 0;
+}
+
+function optimisticallyUpdateQuantityUI(productId, action) {
+  const productIdStr = String(productId);
+  const safeAttrVal = productIdStr.replace(/"/g, "");
+  const row = document.querySelector(`#cartTableBody .table-row[data-product-id="${safeAttrVal}"]`);
+  const offcanvasItem = document.querySelector(`#offcanvasCartList .vertical-product-box[data-id="${safeAttrVal}"]`);
+
+  const mainQtyInput = row?.querySelector(".input-qty");
+  const mainRowTotalEl = row?.querySelector(".row-total");
+
+  const offcanvasQtyInput = offcanvasItem?.querySelector(".input-qty");
+  const offcanvasPriceEl = offcanvasItem?.querySelector(".product-content .price");
+
+  const currentItem = getCurrentCartItem(productIdStr);
+
+  // Prefer API data, fall back to DOM math
+  const currentQty = safeNumber(mainQtyInput?.value, currentItem?.quantity) || 1;
+  const unitPrice = getUnitPriceFromItem(currentItem) || (() => {
+    if (mainRowTotalEl && mainRowTotalEl.textContent) {
+      const rowTotal = safeNumber(mainRowTotalEl.textContent.replace(/[^\d.]/g, ""));
+      return currentQty > 0 ? rowTotal / currentQty : 0;
+    }
+    return 0;
+  })();
+
+  const nextQty = action === "ADD" ? currentQty + 1 : Math.max(1, currentQty - 1);
+  const nextTotal = unitPrice * nextQty;
+
+  if (mainQtyInput) mainQtyInput.value = nextQty;
+  if (mainRowTotalEl && unitPrice > 0) mainRowTotalEl.textContent = `₹${nextTotal.toFixed(2)}`;
+
+  if (offcanvasQtyInput) offcanvasQtyInput.value = nextQty;
+  if (offcanvasPriceEl && unitPrice > 0) offcanvasPriceEl.textContent = `₹${nextTotal.toFixed(2)}`;
+
+  // Update global state (best effort) so subsequent UI uses correct numbers.
+  if (currentItem) {
+    currentItem.quantity = nextQty;
+    currentItem.total = nextTotal;
+  }
+
+  // Recompute totals from UI/global state (best effort).
+  const items = Array.isArray(currentCartData.items) ? currentCartData.items : [];
+  let newSubTotal = items.reduce((sum, it) => sum + safeNumber(it.total), 0);
+  if (!newSubTotal) {
+    const domTotals = Array.from(document.querySelectorAll("#cartTableBody .row-total"))
+      .map((el) => safeNumber(el.textContent.replace(/[^\d.]/g, "")))
+      .filter((n) => Number.isFinite(n));
+    newSubTotal = domTotals.reduce((sum, n) => sum + n, 0);
+  }
+  const newDiscount = safeNumber(currentCartData.discount, 0);
+  const newFinalTotal = newSubTotal - newDiscount;
+  currentCartData.subTotal = newSubTotal;
+  currentCartData.finalTotal = newFinalTotal;
+  currentCartData.discount = newDiscount;
+
+  updateCartSummary({
+    subTotal: newSubTotal,
+    discount: newDiscount,
+    finalTotal: newFinalTotal,
+  });
+
+  const countSpan = document.querySelector("#cartCount span");
+  if (countSpan) {
+    let itemCount = items.reduce((sum, it) => sum + Math.max(0, parseInt(it.quantity, 10) || 0), 0);
+    if (!itemCount) {
+      const qtyInputs = Array.from(document.querySelectorAll("#cartTableBody .input-qty"));
+      itemCount = qtyInputs.reduce((sum, el) => sum + Math.max(0, parseInt(el.value, 10) || 0), 0);
+    }
+    countSpan.textContent = `(${itemCount})`;
+  }
+
+  const offcanvasSubtotal = document.getElementById("offcanvasSubtotal");
+  if (offcanvasSubtotal && unitPrice >= 0) {
+    offcanvasSubtotal.textContent = `₹${newSubTotal.toFixed(2)}`;
+  }
+}
+
 // ==================== CORE FUNCTIONS ====================
 async function updateQuantity(productId, action) {
   try {
+    const userToken = localStorage.getItem("userToken");
+    if (!userToken) {
+      // Guest cart: backend auth may reject the request; still update UI immediately.
+      optimisticallyUpdateQuantityUI(productId, action);
+      return;
+    }
+
     const headers = getHeaders();
     const res = await fetch(API.updateQuantity, {
       method: "POST",
@@ -167,12 +270,15 @@ async function updateQuantity(productId, action) {
     const data = await res.json().catch(() => ({}));
     if (!res.ok || data.success === false) {
       console.error("Quantity update rejected:", data);
+      // Best-effort fallback (so the user sees the click take effect).
+      optimisticallyUpdateQuantityUI(productId, action);
       Swal.fire("Error", data.message || data.title || "Failed to update quantity", "error");
       return;
     }
     await refreshAllCarts();
   } catch (err) {
     console.error("Quantity update failed:", err);
+    optimisticallyUpdateQuantityUI(productId, action);
     Swal.fire("Error", "Failed to update quantity", "error");
   }
 }
