@@ -102,6 +102,31 @@ function renderMainCart(items) {
   countSpan.textContent = `(${items.length})`;
 
   items.forEach((item) => {
+    const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
+    const currentUnitPrice =
+      item.currentPrice != null
+        ? Number(item.currentPrice)
+        : item.price != null
+          ? Number(item.price)
+          : qty > 0
+            ? safeNumber(item.total) / qty
+            : 0;
+    const originalUnitPrice =
+      item.originalPrice != null
+        ? Number(item.originalPrice)
+        : item.price != null && item.currentPrice != null
+          ? Number(item.price)
+          : null;
+    const showOriginal =
+      originalUnitPrice != null &&
+      Number.isFinite(originalUnitPrice) &&
+      Number.isFinite(currentUnitPrice) &&
+      originalUnitPrice > currentUnitPrice;
+    const originalTotal = showOriginal ? originalUnitPrice * qty : 0;
+    const originalPriceHtml = showOriginal
+      ? `<del class="del-price">₹${originalTotal.toFixed(2)}</del>`
+      : "";
+
     const rowHTML = `
       <tr class="table-row" data-product-id="${item.productId}">
         <td>
@@ -132,6 +157,7 @@ function renderMainCart(items) {
         </td>
         <td>
           <h4 class="h5 row-total">₹${item.total}</h4>
+          ${originalPriceHtml}
         </td>
       </tr>
     `;
@@ -146,13 +172,30 @@ function updateCartSummary(data) {
   const shippingEl = document.querySelector(".summery-contain ul li:nth-child(3) .price");
   const finalTotalEl = document.querySelector(".summery-total .price");
 
-  if (subTotalEl) subTotalEl.textContent = `₹${(data.subTotal || 0).toFixed(2)}`;
-  if (couponDiscountEl) couponDiscountEl.textContent = `(-) ₹${(data.discount || 0).toFixed(2)}`;
+  const subTotal =
+    data.subTotal ??
+    data.subtotal ??
+    data.cartAmount ??
+    0;
+  const discount =
+    data.discount ??
+    data.couponDiscount ??
+    data.couponDiscountAmount ??
+    data.couponDiscountValue ??
+    0;
+  const finalTotal =
+    data.finalTotal ??
+    data.finalAmount ??
+    data.totalAmount ??
+    subTotal;
+
+  if (subTotalEl) subTotalEl.textContent = `₹${safeNumber(subTotal).toFixed(2)}`;
+  if (couponDiscountEl) couponDiscountEl.textContent = `(-) ₹${safeNumber(discount).toFixed(2)}`;
   
   // Shipping - assuming it's not coming from API yet, keeping static or set to 0
   if (shippingEl) shippingEl.textContent = "₹0.00";
 
-  if (finalTotalEl) finalTotalEl.textContent = `₹${(data.finalTotal || data.subTotal || 0).toFixed(2)}`;
+  if (finalTotalEl) finalTotalEl.textContent = `₹${safeNumber(finalTotal).toFixed(2)}`;
 }
 
 function safeNumber(n, fallback = 0) {
@@ -183,9 +226,11 @@ function optimisticallyUpdateQuantityUI(productId, action) {
 
   const mainQtyInput = row?.querySelector(".input-qty");
   const mainRowTotalEl = row?.querySelector(".row-total");
+  const mainOriginalDelEl = row?.querySelector("del.del-price");
 
   const offcanvasQtyInput = offcanvasItem?.querySelector(".input-qty");
   const offcanvasPriceEl = offcanvasItem?.querySelector(".product-content .price");
+  const offcanvasOriginalDelEl = offcanvasItem?.querySelector("del.del-price");
 
   const currentItem = getCurrentCartItem(productIdStr);
 
@@ -207,6 +252,26 @@ function optimisticallyUpdateQuantityUI(productId, action) {
 
   if (offcanvasQtyInput) offcanvasQtyInput.value = nextQty;
   if (offcanvasPriceEl && unitPrice > 0) offcanvasPriceEl.textContent = `₹${nextTotal.toFixed(2)}`;
+
+  if (currentItem) {
+    const originalUnitPrice =
+      currentItem.originalPrice != null
+        ? Number(currentItem.originalPrice)
+        : currentItem.price != null && currentItem.currentPrice != null
+          ? Number(currentItem.price)
+          : null;
+
+    const shouldShowOriginal =
+      originalUnitPrice != null &&
+      Number.isFinite(originalUnitPrice) &&
+      originalUnitPrice > unitPrice;
+
+    if (shouldShowOriginal) {
+      const originalTotal = originalUnitPrice * nextQty;
+      if (mainOriginalDelEl) mainOriginalDelEl.textContent = `₹${originalTotal.toFixed(2)}`;
+      if (offcanvasOriginalDelEl) offcanvasOriginalDelEl.textContent = `₹${originalTotal.toFixed(2)}`;
+    }
+  }
 
   // Update global state (best effort) so subsequent UI uses correct numbers.
   if (currentItem) {
@@ -526,6 +591,31 @@ function renderOffcanvasCart(items) {
   let subtotal = 0;
 
   items.forEach(item => {
+    const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
+    const currentUnitPrice =
+      item.currentPrice != null
+        ? Number(item.currentPrice)
+        : item.price != null
+          ? Number(item.price)
+          : qty > 0
+            ? safeNumber(item.total) / qty
+            : 0;
+    const originalUnitPrice =
+      item.originalPrice != null
+        ? Number(item.originalPrice)
+        : item.price != null && item.currentPrice != null
+          ? Number(item.price)
+          : null;
+    const showOriginal =
+      originalUnitPrice != null &&
+      Number.isFinite(originalUnitPrice) &&
+      Number.isFinite(currentUnitPrice) &&
+      originalUnitPrice > currentUnitPrice;
+    const originalTotal = showOriginal ? originalUnitPrice * qty : 0;
+    const originalPriceHtml = showOriginal
+      ? `<del class="del-price">₹${originalTotal.toFixed(2)}</del>`
+      : "";
+
     const itemTotal = item.total || item.currentPrice || (item.price * item.quantity);
     subtotal += itemTotal;
 
@@ -546,6 +636,7 @@ function renderOffcanvasCart(items) {
           </div>
           
           <h5 class="price">₹${itemTotal}</h5>
+          ${originalPriceHtml}
 
           <div class="quantity-box qty-container d-flex align-items-center gap-2 mt-2">
             <button class="btn qty-btn-minus" data-id="${item.productId}">
