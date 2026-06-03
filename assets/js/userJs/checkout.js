@@ -1,6 +1,122 @@
 // ==================== PROCEED TO CHECKOUT LOGIC ====================
-// ==================== PROCEED TO CHECKOUT LOGIC ====================
 const CHECKOUT_API_ROOT = window.BASE || "https://api.workarya.com";
+const CHECKOUT_SNAPSHOT_KEY = "latestCheckoutData";
+
+function invalidateCheckoutSnapshot() {
+  try {
+    sessionStorage.removeItem(CHECKOUT_SNAPSHOT_KEY);
+    sessionStorage.setItem("checkoutCartRevision", String(Date.now()));
+  } catch (_) {}
+  window.__checkoutData = null;
+}
+
+function saveCheckoutSnapshot(data) {
+  if (!data || typeof data !== "object") return;
+  try {
+    sessionStorage.setItem(CHECKOUT_SNAPSHOT_KEY, JSON.stringify(data));
+  } catch (_) {}
+  window.__checkoutData = data;
+  if (document.getElementById("checkoutProduct")) {
+    syncCheckoutSnapshotToUrl(data);
+  }
+}
+
+function syncCheckoutSnapshotToUrl(data) {
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set("checkoutData", encodeURIComponent(JSON.stringify(data)));
+    window.history.replaceState({}, "", url);
+  } catch (_) {}
+}
+
+function getCheckoutDataFromUrlOrStorage() {
+  if (window.__checkoutData) return window.__checkoutData;
+  try {
+    const cached = sessionStorage.getItem(CHECKOUT_SNAPSHOT_KEY);
+    if (cached) return JSON.parse(cached);
+  } catch (_) {}
+  const checkoutDataStr = new URLSearchParams(window.location.search).get("checkoutData");
+  if (!checkoutDataStr) return null;
+  try {
+    return JSON.parse(decodeURIComponent(checkoutDataStr));
+  } catch (_) {
+    return null;
+  }
+}
+
+function getLineTotal(item) {
+  const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
+  if (item.total != null && Number.isFinite(Number(item.total))) {
+    return Number(item.total);
+  }
+  const unit =
+    item.currentPrice != null
+      ? Number(item.currentPrice)
+      : item.price != null
+        ? Number(item.price)
+        : 0;
+  return unit * qty;
+}
+
+async function fetchCheckoutData() {
+  const userToken = localStorage.getItem("userToken");
+  if (!userToken) return null;
+
+  const currentCoupon = localStorage.getItem("appliedCoupon") || "";
+  try {
+    const res = await fetch(`${CHECKOUT_API_ROOT}/api/orders/checkout`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ couponCode: currentCoupon }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.success === true) {
+      saveCheckoutSnapshot(data);
+      return data;
+    }
+    if (isUserNotFoundMessage(data.message)) {
+      localStorage.removeItem("userToken");
+    }
+  } catch (err) {
+    console.error("fetchCheckoutData error:", err);
+  }
+  return null;
+}
+
+async function loadAndRenderCheckout() {
+  const tbody = document.getElementById("checkoutProduct");
+  if (!tbody) return;
+
+  const fresh = await fetchCheckoutData();
+  if (fresh) {
+    renderCheckoutProducts(fresh);
+    return;
+  }
+
+  const fallback = getCheckoutDataFromUrlOrStorage();
+  if (fallback) {
+    renderCheckoutProducts(fallback);
+    return;
+  }
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="2" class="text-center py-3">Please select item.</td>
+    </tr>
+  `;
+}
+
+async function getCheckoutDataForOrder() {
+  const fresh = await fetchCheckoutData();
+  if (fresh) return fresh;
+  return getCheckoutDataFromUrlOrStorage();
+}
+
+window.invalidateCheckoutSnapshot = invalidateCheckoutSnapshot;
+window.saveCheckoutSnapshot = saveCheckoutSnapshot;
+window.fetchCheckoutData = fetchCheckoutData;
+window.refreshCheckoutPage = loadAndRenderCheckout;
+window.getCheckoutDataForOrder = getCheckoutDataForOrder;
 
 function openLoginModal() {
   const authModalEl = document.getElementById("authenticationModal");
@@ -114,14 +230,9 @@ async function proceedToCheckout() {
     console.log("Checkout API Response:", data);
 
     if (res.ok && data.success === true) {
-
-      // Show full response in alert
-      // alert("✅ Checkout API Full Response:\n\n" + JSON.stringify(data, null, 2));
-
-      // Pass data to checkout.php via URL
+      saveCheckoutSnapshot(data);
       const encodedData = encodeURIComponent(JSON.stringify(data));
       window.location.href = `checkout.php?checkoutData=${encodedData}`;
-
     } else {
       if (isUserNotFoundMessage(data.message)) {
         localStorage.removeItem("userToken");
@@ -159,21 +270,13 @@ async function proceedToCheckout() {
 // ================================================
 
 document.addEventListener("DOMContentLoaded", function () {
-  
-  const urlParams = new URLSearchParams(window.location.search);
-  const checkoutDataStr = urlParams.get("checkoutData");
+  if (!document.getElementById("checkoutProduct")) return;
+  loadAndRenderCheckout();
+});
 
-  if (!checkoutDataStr) {
-    console.warn("No checkout data found in URL!");
-    return;
-  }
-
-  try {
-    const data = JSON.parse(decodeURIComponent(checkoutDataStr));
-    renderCheckoutProducts(data);
-  } catch (e) {
-    console.error("Error parsing checkout data:", e);
-  }
+window.addEventListener("pageshow", function () {
+  if (!document.getElementById("checkoutProduct")) return;
+  loadAndRenderCheckout();
 });
 
 function renderCheckoutProducts(data) {
@@ -198,8 +301,8 @@ function renderCheckoutProducts(data) {
 
   // Render Products with Clickable Link
   cartItems.forEach(item => {
-    const price = parseFloat(item.price) || 0;
-    
+    const lineTotal = getLineTotal(item);
+
     html += `
       <tr>
         <td>
@@ -214,7 +317,7 @@ function renderCheckoutProducts(data) {
             </div>
           </div>
         </td>
-        <td>₹${price.toLocaleString('en-IN')}</td>
+        <td>₹${lineTotal.toLocaleString("en-IN")}</td>
       </tr>
     `;
   });

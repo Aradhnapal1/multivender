@@ -130,5 +130,5 @@
     </section>
     <!-- News-letter Section End -->
 
-    <script src="assets/js/userJs/contact-enquiry.js?v=1"></script>
+    <script src="assets/js/userJs/contact-enquiry.js?v=4"></script>
     <?php include 'footer.php'; ?>

@@ -1,4 +1,5 @@
 const ENQUIRY_API = "https://api.workarya.com/api/enquiry";
+const ENQUIRY_LIST_API = "https://api.workarya.com/api/enquiry/all-enquery";
 
 function getEnquiryId(item) {
     return item?.id || item?._id || "";
@@ -49,7 +50,7 @@ async function loadEnquiries() {
     tbody.innerHTML = `<tr><td colspan="8" class="text-center">Loading enquiries...</td></tr>`;
 
     try {
-        const res = await fetch(ENQUIRY_API, { headers: getAuthHeaders() });
+        const res = await fetch(ENQUIRY_LIST_API, { headers: getAuthHeaders() });
         const json = await res.json().catch(() => ({}));
         const list = parseEnquiryList(json);
 

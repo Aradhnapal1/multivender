@@ -420,6 +420,16 @@ async function clearCart() {
 async function refreshAllCarts() {
   await initMainCart();        // This will also update summary
   await loadOffcanvasCart();
+
+  if (typeof window.invalidateCheckoutSnapshot === "function") {
+    window.invalidateCheckoutSnapshot();
+  }
+  if (
+    document.getElementById("checkoutProduct") &&
+    typeof window.refreshCheckoutPage === "function"
+  ) {
+    await window.refreshCheckoutPage();
+  }
 }
 
 // ==================== COUPON CODE LOGIC (NEW) ====================
@@ -533,7 +543,9 @@ async function proceedToCheckout() {
     console.log("Checkout API Response:", data);
 
     if (response.ok && data.success === true) {
-      // Pass data to checkout.php via URL
+      if (typeof window.saveCheckoutSnapshot === "function") {
+        window.saveCheckoutSnapshot(data);
+      }
       const encodedData = encodeURIComponent(JSON.stringify(data));
       window.location.href = `checkout.php?checkoutData=${encodedData}`;
     } else {

@@ -124,20 +124,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const paymentMethod = selectedPaymentRadio.id === "cod" ? "COD" : "RAZORPAY";
 
-      // 3. Get Checkout Data
-      const urlParams = new URLSearchParams(window.location.search);
-      const checkoutDataStr = urlParams.get("checkoutData");
-
-      if (!checkoutDataStr) {
-        Swal.fire({ title: "Error", text: "Checkout data not found.", icon: "error" });
-        return;
+      // 3. Get latest checkout data (always synced with current cart)
+      let checkoutData = null;
+      if (typeof window.getCheckoutDataForOrder === "function") {
+        checkoutData = await window.getCheckoutDataForOrder();
+      } else {
+        const checkoutDataStr = new URLSearchParams(window.location.search).get("checkoutData");
+        if (checkoutDataStr) {
+          try {
+            checkoutData = JSON.parse(decodeURIComponent(checkoutDataStr));
+          } catch (_) {}
+        }
       }
 
-      let checkoutData;
-      try {
-        checkoutData = JSON.parse(decodeURIComponent(checkoutDataStr));
-      } catch (e) {
-        Swal.fire("Error", "Invalid checkout data", "error");
+      if (!checkoutData) {
+        Swal.fire({ title: "Error", text: "Checkout data not found.", icon: "error" });
         return;
       }
 

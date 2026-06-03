@@ -92,9 +92,9 @@ $__pwa_is_home = ($__pwa_script === 'index.php' || $__pwa_script === '' || $__pw
     <script src="./assets/js/userJs/category.js?v=7"></script>
     <script src="./assets/js/userJs/user-order.js?v=2"></script>
     <script src="./assets/js/userJs/cart.js"></script>
-    <script src="./assets/js/userJs/checkout.js?v=2"></script>
+    <script src="./assets/js/userJs/checkout.js?v=3"></script>
     <script src="./assets/js/userJs/address.js"></script>
-    <script src="./assets/js/userJs/createorder.js?v=3"></script>
+    <script src="./assets/js/userJs/createorder.js?v=4"></script>
     <script src="./assets/js/userJs/recentView.js"></script>
     <script src="./assets/js/userJs/productFilter.js?v=2"></script>
     <script src="./assets/js/userJs/wishlist-notify.js"></script>

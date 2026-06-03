@@ -1,4 +1,4 @@
-const ENQUIRY_API = "https://api.workarya.com/api/enquiry";
+const ENQUIRY_API = "https://api.workarya.com/api/enquiry/create-inquery";
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("contactEnquiryForm");
@@ -24,14 +24,14 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const payload = {
-            name,
-            email,
-            phone,
-            topic,
-            message,
-            status: "NEW"
-        };
+        // API expects multipart/form-data (like Postman) with `subject` key.
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("phone", phone);
+        formData.append("subject", topic);
+        formData.append("message", message);
+        formData.append("status", "NEW");
 
         const originalText = submitBtn ? submitBtn.textContent : "";
         if (submitBtn) {
@@ -41,13 +41,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         try {
             const userToken = localStorage.getItem("userToken");
-            const headers = { "Content-Type": "application/json" };
+            const headers = {};
             if (userToken) headers["Authorization"] = `Bearer ${userToken}`;
 
             const res = await fetch(ENQUIRY_API, {
                 method: "POST",
                 headers,
-                body: JSON.stringify(payload)
+                body: formData
             });
 
             const data = await res.json().catch(() => ({}));
