@@ -446,7 +446,7 @@
                     <li class="menu-item">
                         <a href="#authPages" data-bs-toggle="collapse" class="menu-link">
                             <span class="menu-icon"><i data-feather="users"></i></span>
-                            <span class="menu-text"> Auth Pages </span>
+                            <span class="menu-text"> Setting </span>
                             <span class="menu-arrow"></span>
                         </a>
                         <div class="collapse" id="authPages">
@@ -461,16 +461,7 @@
                                         <span class="menu-text">Sign In</span>
                                     </a>
                                 </li>
-                                <li class="menu-item">
-                                    <a href="reset-password.php" class="menu-link">
-                                        <span class="menu-text">Reset Password</span>
-                                    </a>
-                                </li>
-                                <li class="menu-item">
-                                    <a href="forget-password.php" class="menu-link">
-                                        <span class="menu-text">Forget Password</span>
-                                    </a>
-                                </li>
+                               
                             </ul>
                         </div>
                     </li>

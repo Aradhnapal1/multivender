@@ -99,29 +99,32 @@ document.addEventListener("DOMContentLoaded", function () {
         const id = urlParams.get('id');
         
         if (id) {
-            // Load existing details from List endpoint based on id
-            fetch(`${BASE_URL}/list`, { headers: { "Authorization": `Bearer ${token}` } })
+            // Load existing details from GET by ID endpoint
+            fetch(`${BASE_URL}/${id}`, { headers: { "Authorization": `Bearer ${token}` } })
                 .then(r => r.json())
                 .then(json => {
-                    const data = json.data || json || [];
-                    const item = data.find(d => d.id === id);
-                    if (item) {
+                    const item = json.data || json;
+                    if (item && Object.keys(item).length > 0) {
                         document.getElementById("couponCode").value = item.code || '';
                         document.getElementById("description").value = item.description || '';
-                        document.getElementById("discountType").value = item.type || item.discountType || 'percentage';
-                        document.getElementById("discountValue").value = item.value || item.discountValue || '';
-                        document.getElementById("minOrderAmount").value = item.minOrderAmount || '';
-                        document.getElementById("maxDiscountAmount").value = item.maxDiscountAmount || '';
-                        document.getElementById("usageLimit").value = item.usageLimit || '';
+                        document.getElementById("discountType").value = item.discount_type || item.discountType || item.type || 'percentage';
+                        document.getElementById("discountValue").value = item.discount_value || item.discountValue || item.value || '';
+                        document.getElementById("minOrderAmount").value = item.min_order_amount || item.minOrderAmount || '';
+                        document.getElementById("maxDiscountAmount").value = item.max_discount_amount || item.maxDiscountAmount || '';
+                        document.getElementById("usageLimit").value = item.usage_limit || item.usageLimit || '';
                         
-                        if (item.startDate) document.getElementById("startDate").value = item.startDate.substring(0, 16);
-                        if (item.endDate) document.getElementById("endDate").value = item.endDate.substring(0, 16);
+                        if (item.start_date || item.startDate) document.getElementById("startDate").value = (item.start_date || item.startDate).substring(0, 16);
+                        if (item.end_date || item.endDate) document.getElementById("endDate").value = (item.end_date || item.endDate).substring(0, 16);
                         
-                        if (item.applicableOn && item.applicableOn !== "all") {
-                            document.getElementById("applicableOn").value = item.applicableOn;
+                        const applicableOn = item.applicable_on || item.applicableOn;
+                        if (applicableOn && applicableOn !== "all") {
+                            document.getElementById("applicableOn").value = applicableOn;
+                        } else {
+                            document.getElementById("applicableOn").value = "all";
                         }
                     }
-                });
+                })
+                .catch(err => console.error("Error fetching coupon details:", err));
         }
 
         editBtn.addEventListener("click", async (e) => {
