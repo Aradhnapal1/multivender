@@ -74,9 +74,9 @@ async function loadEnquiries() {
                     <td class="text-truncate" style="max-width:200px;" title="${escapeHtml(item.message)}">${escapeHtml(item.message)}</td>
                     <td>${statusBadge(item.status)}</td>
                     <td class="table-action text-nowrap">
-                        <a href="javascript:void(0);" class="action-icon me-1" title="View" onclick="viewEnquiry('${id}')">
-                            <i class="mdi mdi-eye-outline text-primary"></i>
-                        </a>
+                       <a href="javascript:void(0);" class="action-icon me-1" title="View" onclick="viewEnquiry('${id}')">
+    <i class="mdi mdi-eye-outline text-primary"></i>
+</a>
                         <a href="javascript:void(0);" class="action-icon" title="Delete" onclick="deleteEnquiry('${id}')">
                             <i class="mdi mdi-trash-can text-danger"></i>
                         </a>
@@ -90,49 +90,82 @@ async function loadEnquiries() {
     }
 }
 
-window.viewEnquiry = async function (id) {
-    if (!id) return;
-    const token = localStorage.getItem("superadminToken");
-    if (!token) return;
 
-    const modalEl = document.getElementById("enquiryDetailModal");
-    const bodyEl = document.getElementById("enquiryDetailBody");
-    if (!modalEl || !bodyEl) return;
+async function viewEnquiry(id) {
 
-    bodyEl.innerHTML = `<p class="text-center text-muted mb-0">Loading...</p>`;
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const modal = new bootstrap.Modal(
+        document.getElementById('enquiryDetailModal')
+    );
+
+    document.getElementById("enquiryDetailBody").innerHTML =
+        '<p class="text-muted">Loading...</p>';
+
     modal.show();
 
     try {
-        const res = await fetch(`https://api.workarya.com/api/enquiry/get-by-id/${encodeURIComponent(id)}`, {
-            headers: getAuthHeaders()
-        });
-        const json = await res.json().catch(() => ({}));
-        const item = json?.data || json;
 
-        if (!res.ok || !item || typeof item !== "object") {
-            bodyEl.innerHTML = `<p class="text-danger mb-0">${escapeHtml(json.message || "Failed to load enquiry details.")}</p>`;
-            return;
+        const token = localStorage.getItem("superadminToken");
+
+        const response = await fetch(
+            `https://api.workarya.com/api/enquiry/get-by-id/${id}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        console.log("Status:", response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error ${response.status}`);
         }
 
-        const created = item.createdAt || item.createDate || item.created_at || "";
-        bodyEl.innerHTML = `
-            <dl class="row mb-0">
-                <dt class="col-sm-3">Name</dt><dd class="col-sm-9">${escapeHtml(item.name)}</dd>
-                <dt class="col-sm-3">Email</dt><dd class="col-sm-9"><a href="mailto:${escapeHtml(item.email)}">${escapeHtml(item.email)}</a></dd>
-                <dt class="col-sm-3">Phone</dt><dd class="col-sm-9">${escapeHtml(item.phone)}</dd>
-                <dt class="col-sm-3">Topic</dt><dd class="col-sm-9">${escapeHtml(item.topic)}</dd>
-                <dt class="col-sm-3">Status</dt><dd class="col-sm-9">${statusBadge(item.status)}</dd>
-                <dt class="col-sm-3">Date</dt><dd class="col-sm-9">${created ? new Date(created).toLocaleString() : "-"}</dd>
-                <dt class="col-sm-3">Message</dt><dd class="col-sm-9">${escapeHtml(item.message)}</dd>
-            </dl>
-        `;
-    } catch (err) {
-        console.error("Enquiry detail error:", err);
-        bodyEl.innerHTML = `<p class="text-danger mb-0">Something went wrong.</p>`;
-    }
-};
+        const result = await response.json();
 
+        console.log("API Response:", result);
+
+        // Agar API { data: {...} } return karti hai
+        const data = result.data || result;
+
+        document.getElementById("enquiryDetailBody").innerHTML = `
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <strong>Name:</strong> ${data.name || '-'}
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <strong>Email:</strong> ${data.email || '-'}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Topic:</strong> ${data.topic || '-'}
+                </div>
+
+
+                <div class="col-md-6 mb-2">
+                    <strong>Phone:</strong> ${data.phone || '-'}
+                </div>
+
+                <div class="col-12">
+                    <strong>Message:</strong><br>
+                    ${data.message || '-'}
+                </div>
+            </div>
+        `;
+
+    } catch (error) {
+
+        console.error("API Error:", error);
+
+        document.getElementById("enquiryDetailBody").innerHTML = `
+            <div class="alert alert-danger">
+                ${error.message}
+            </div>
+        `;
+    }
+}
 window.deleteEnquiry = async function (id) {
     if (!id) return;
 
