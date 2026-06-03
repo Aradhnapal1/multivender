@@ -78,7 +78,7 @@
                                     <!-- <th>Product Name</th> -->
                                     <th>Date</th>
                                     <th>Total</th>
-                                    <th>Payment Status</th>
+                                    <th>Payment Method</th>
                                     <th>Order Status</th>
                                     <th>Order Detail</th>
                                     <th>Invoice</th>

@@ -25,6 +25,8 @@ async function loadOrders() {
       }
       const firstItem = (o.items && o.items[0]) || {};
       const address = o.address || {};
+    
+     
 
       const row = `
         <tr>
@@ -51,7 +53,7 @@ async function loadOrders() {
 
           <td>₹${o.totalAmount ?? o.total ?? 0}</td>
 
-          <td>${o.paymentStatus || o.paymentstatus || "-"}</td>
+          <td>${o.paymentMethod  || "-"}</td>
 
           <td>
             <span class="badge bg-info-subtle text-info fw-semibold">
@@ -105,6 +107,7 @@ function normalizeOrder(order = {}) {
     orderId: order.orderId || order.OrderId || order.id || order.Id || "",
     createdAt: order.createdAt || order.CreatedAt || null,
     totalAmount: order.totalAmount ?? order.TotalAmount ?? order.total ?? order.Total ?? 0,
+    paymentMethod: order.paymentMethod || order.PaymentMethod || "-",
     paymentStatus: order.paymentStatus || order.PaymentStatus || order.paymentstatus || "-",
     orderStatus: order.orderStatus || order.OrderStatus || order.status || order.Status || "-",
     address: {
@@ -226,4 +229,3 @@ function printInvoice(orderId) {
 //     alert("PDF failed");
 //   }
 // }
-
