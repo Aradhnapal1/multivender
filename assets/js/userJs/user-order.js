@@ -241,7 +241,7 @@ function normalizeOrdersResponse(result) {
       orderId: order.orderId || order.OrderId || order.id || order.Id || "",
       createdAt: order.createdAt || order.CreatedAt || "",
       orderStatus: order.orderStatus || order.OrderStatus || "",
-      paymentStatus: order.paymentStatus || order.PaymentStatus || "",
+      paymentStatus: order.paymentMethod || order.paymentMethod || "",
       finalAmount: order.finalAmount ?? order.FinalAmount ?? order.totalAmount ?? order.TotalAmount ?? 0,
       items: normalizedItems,
     };
@@ -262,6 +262,7 @@ function normalizeOrdersResponse(result) {
 <script> */}
 
 const userToken = localStorage.getItem('userToken') || ''; 
+let currentAddresses = [];
 
 async function loadAddresses() {
     const container = document.getElementById('addressContainer');
@@ -293,6 +294,7 @@ async function loadAddresses() {
         if (!response.ok) throw new Error('Failed to load addresses');
 
         const addresses = await response.json();   // Your API returns direct array
+        currentAddresses = addresses;
 
         container.innerHTML = '';
 
@@ -394,9 +396,138 @@ function addEventListeners() {
 
 // Edit function (you can open modal here)
 function editAddress(id) {
-    alert(`Edit Address - ID: ${id}`);
-    // TODO: Open edit modal and pre-fill data
+    const addr = currentAddresses.find(a => String(a.id) === String(id));
+    if (!addr) {
+        alert("Address not found!");
+        return;
+    }
+
+    let modalEl = document.getElementById("editAddressModal");
+    if (!modalEl) {
+        modalEl = document.createElement("div");
+        modalEl.id = "editAddressModal";
+        modalEl.className = "modal fade";
+        modalEl.setAttribute("tabindex", "-1");
+        document.body.appendChild(modalEl);
+    }
+
+    modalEl.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Address</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAddressForm">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="editFullName" value="${addr.fullName || ''}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="editPhone" value="${addr.phoneNumber || ''}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address Line 1</label>
+                            <input type="text" class="form-control" id="editAddr1" value="${addr.addressLine1 || ''}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address Line 2</label>
+                            <input type="text" class="form-control" id="editAddr2" value="${addr.addressLine2 || ''}">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control" id="editCity" value="${addr.city || ''}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">State</label>
+                                <input type="text" class="form-control" id="editState" value="${addr.state || ''}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Country</label>
+                                <input type="text" class="form-control" id="editCountry" value="${addr.country || ''}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Postal Code</label>
+                                <input type="text" class="form-control" id="editPostal" value="${addr.postalCode || ''}" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address Type</label>
+                            <input type="text" class="form-control" id="editAddressType" value="${addr.addressType || ''}" placeholder="e.g. Home, Office, Other">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitEditAddress('${id}')">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modalInstance.show();
 }
+
+window.submitEditAddress = async function(id) {
+    const btn = document.querySelector("#editAddressModal .btn-primary");
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.innerHTML = 'Saving... <span class="spinner-border spinner-border-sm"></span>';
+
+    const payload = {
+        fullName: document.getElementById('editFullName').value.trim(),
+        phoneNumber: document.getElementById('editPhone').value.trim(),
+        addressLine1: document.getElementById('editAddr1').value.trim(),
+        addressLine2: document.getElementById('editAddr2').value.trim(),
+        city: document.getElementById('editCity').value.trim(),
+        state: document.getElementById('editState').value.trim(),
+        country: document.getElementById('editCountry').value.trim(),
+        postalCode: document.getElementById('editPostal').value.trim(),
+        addressType: document.getElementById('editAddressType').value.trim() || 'Home'
+    };
+
+    try {
+        const response = await fetch(`https://api.workarya.com/api/address/update/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            const modalEl = document.getElementById("editAddressModal");
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            modalInstance.hide();
+            
+            if (typeof Swal !== 'undefined') {
+                Swal.fire("Success", "Address updated successfully!", "success");
+            } else {
+                alert("Address updated successfully!");
+            }
+            
+            loadAddresses(); // Refresh the list
+        } else {
+            const data = await response.json().catch(() => ({}));
+            let errMsg = data.message || 'Failed to update address';
+            if (data.errors && typeof data.errors === 'object') {
+                errMsg = Object.values(data.errors)[0][0] || errMsg;
+            }
+            alert(errMsg);
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong while updating address.");
+    } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+    }
+};
 
 // Delete function
 async function deleteAddress(id) {
@@ -421,9 +552,3 @@ async function deleteAddress(id) {
 
 // Load addresses on page load
 document.addEventListener('DOMContentLoaded', loadAddresses);
-
-
-
-
-
-
