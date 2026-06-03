@@ -47,6 +47,15 @@
                         </div>
                         <div class="table-responsive">
                             <table class="table cart-table-box">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                       <th style="text-align: center;">Quantity</th>
+                                        <th>Action</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
                                 <tbody id="cartTableBody">
                                     <tr class="table-row">
                                         <td>

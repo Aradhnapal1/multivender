@@ -6,10 +6,13 @@ function isCartItemZeroPriced(item) {
   const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
   const total = Number(item.total);
   const unit =
-    item.price != null ? Number(item.price)
-    : item.currentPrice != null ? Number(item.currentPrice)
-    : Number.isFinite(total) ? total / qty
-    : NaN;
+    item.price != null
+      ? Number(item.price)
+      : item.currentPrice != null
+        ? Number(item.currentPrice)
+        : Number.isFinite(total)
+          ? total / qty
+          : NaN;
   return !Number.isFinite(unit) || unit <= 0;
 }
 
@@ -30,7 +33,7 @@ const API = {
   list: `${CART_API_ROOT}/api/cart/list`,
   updateQuantity: `${CART_API_ROOT}/api/cart/update-quantity`,
   remove: `${CART_API_ROOT}/api/cart/remove`,
-  clear: `${CART_API_ROOT}/api/cart/clear`
+  clear: `${CART_API_ROOT}/api/cart/clear`,
 };
 
 function openLoginModal() {
@@ -44,7 +47,10 @@ function openLoginModal() {
 }
 
 function isUserNotFoundMessage(message) {
-  return typeof message === "string" && message.toLowerCase().includes("user not found");
+  return (
+    typeof message === "string" &&
+    message.toLowerCase().includes("user not found")
+  );
 }
 
 // ==================== HEADERS ====================
@@ -74,11 +80,12 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==================== MAIN CART ====================
 async function initMainCart(coupon = null) {
   try {
-    const activeCoupon = coupon !== null ? coupon : (localStorage.getItem("appliedCoupon") || "");
-    const res = await fetch(API.list, { 
+    const activeCoupon =
+      coupon !== null ? coupon : localStorage.getItem("appliedCoupon") || "";
+    const res = await fetch(API.list, {
       method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify({ couponCode: activeCoupon })
+      body: JSON.stringify({ couponCode: activeCoupon }),
     });
     const data = await res.json();
     // Store the latest cart data globally
@@ -87,7 +94,7 @@ async function initMainCart(coupon = null) {
     const items = data.items || [];
     renderMainCart(items);
     setCartPageChromeVisible(items.length > 0);
-    updateCartSummary(data);   // Update summary box
+    updateCartSummary(data); // Update summary box
   } catch (err) {
     console.error("Main cart load error:", err);
   }
@@ -116,8 +123,13 @@ function renderMainCart(items) {
                 <h3>${item.productName}</h3>
               </a>
             </div>
+            
           </div>
         </td>
+         <td>
+          <h4 class="h5 row-total">₹${item.discountPrice}</h4>
+          </td>
+        
         <td>
           <div class="quantity-box qty-container quantity-box-2">
             <button class="btn qty-btn-minus" data-id="${item.productId}"><i class="ri-subtract-line"></i></button>
@@ -133,6 +145,9 @@ function renderMainCart(items) {
         <td>
           <h4 class="h5 row-total">₹${item.total}</h4>
         </td>
+       
+
+
       </tr>
     `;
     tbody.insertAdjacentHTML("beforeend", rowHTML);
@@ -141,18 +156,27 @@ function renderMainCart(items) {
 
 // ==================== CART SUMMARY BOX ====================
 function updateCartSummary(data) {
-  const subTotalEl = document.querySelector(".summery-contain ul li:nth-child(1) .price");
-  const couponDiscountEl = document.querySelector(".summery-contain ul li:nth-child(2) .price");
-  const shippingEl = document.querySelector(".summery-contain ul li:nth-child(3) .price");
+  const subTotalEl = document.querySelector(
+    ".summery-contain ul li:nth-child(1) .price",
+  );
+  const couponDiscountEl = document.querySelector(
+    ".summery-contain ul li:nth-child(2) .price",
+  );
+  const shippingEl = document.querySelector(
+    ".summery-contain ul li:nth-child(3) .price",
+  );
   const finalTotalEl = document.querySelector(".summery-total .price");
 
-  if (subTotalEl) subTotalEl.textContent = `₹${(data.subTotal || 0).toFixed(2)}`;
-  if (couponDiscountEl) couponDiscountEl.textContent = `(-) ₹${(data.discount || 0).toFixed(2)}`;
-  
+  if (subTotalEl)
+    subTotalEl.textContent = `₹${(data.subTotal || 0).toFixed(2)}`;
+  if (couponDiscountEl)
+    couponDiscountEl.textContent = `(-) ₹${(data.discount || 0).toFixed(2)}`;
+
   // Shipping - assuming it's not coming from API yet, keeping static or set to 0
   if (shippingEl) shippingEl.textContent = "₹0.00";
 
-  if (finalTotalEl) finalTotalEl.textContent = `₹${(data.finalTotal || data.subTotal || 0).toFixed(2)}`;
+  if (finalTotalEl)
+    finalTotalEl.textContent = `₹${(data.finalTotal || data.subTotal || 0).toFixed(2)}`;
 }
 
 // ==================== CORE FUNCTIONS ====================
@@ -162,12 +186,16 @@ async function updateQuantity(productId, action) {
     const res = await fetch(API.updateQuantity, {
       method: "POST",
       headers,
-      body: JSON.stringify({ productId, action })
+      body: JSON.stringify({ productId, action }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || data.success === false) {
       console.error("Quantity update rejected:", data);
-      Swal.fire("Error", data.message || data.title || "Failed to update quantity", "error");
+      Swal.fire(
+        "Error",
+        data.message || data.title || "Failed to update quantity",
+        "error",
+      );
       return;
     }
     await refreshAllCarts();
@@ -183,7 +211,7 @@ async function removeCartItem(productId) {
     text: "This product will be removed from your cart.",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes, remove it"
+    confirmButtonText: "Yes, remove it",
   });
 
   if (!result.isConfirmed) return;
@@ -193,18 +221,18 @@ async function removeCartItem(productId) {
     const res = await fetch(API.remove, {
       method: "DELETE",
       headers,
-      body: JSON.stringify({ productId })
+      body: JSON.stringify({ productId }),
     });
 
     if (res.ok) {
       // Clear the coupon code locally if the entire cart is cleared
       localStorage.removeItem("appliedCoupon");
-      
+
       Swal.fire({
         icon: "success",
         title: "Item removed!",
         timer: 1200,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
       await refreshAllCarts();
     } else {
@@ -221,7 +249,7 @@ async function clearCart() {
     text: "All items will be removed.",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes, clear it"
+    confirmButtonText: "Yes, clear it",
   });
 
   if (!result.isConfirmed) return;
@@ -229,7 +257,7 @@ async function clearCart() {
   try {
     const res = await fetch(API.clear, {
       method: "DELETE",
-      headers: getHeaders()
+      headers: getHeaders(),
     });
 
     if (res.ok) {
@@ -237,7 +265,7 @@ async function clearCart() {
         icon: "success",
         title: "Cart Cleared!",
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
       await refreshAllCarts();
     }
@@ -247,7 +275,7 @@ async function clearCart() {
 }
 
 async function refreshAllCarts() {
-  await initMainCart();        // This will also update summary
+  await initMainCart(); // This will also update summary
   await loadOffcanvasCart();
 }
 
@@ -262,7 +290,11 @@ async function applyCoupon() {
   }
 
   if (!currentCartData || currentCartData.items.length === 0) {
-    Swal.fire("Error", "Your cart is empty. Add items before applying a coupon.", "error");
+    Swal.fire(
+      "Error",
+      "Your cart is empty. Add items before applying a coupon.",
+      "error",
+    );
     return;
   }
 
@@ -271,13 +303,13 @@ async function applyCoupon() {
     const applyPayload = {
       couponCode: couponCode,
       cartAmount: currentCartData.subTotal,
-      productIds: currentCartData.items.map(item => item.productId)
+      productIds: currentCartData.items.map((item) => item.productId),
     };
 
     const applyRes = await fetch(API.applyCoupon, {
       method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify(applyPayload)
+      body: JSON.stringify(applyPayload),
     });
 
     const applyData = await applyRes.json();
@@ -290,13 +322,10 @@ async function applyCoupon() {
     localStorage.setItem("appliedCoupon", couponCode);
     await initMainCart(couponCode);
     Swal.fire("Success!", "Coupon applied successfully.", "success");
-
   } catch (err) {
     Swal.fire("Error", err.message, "error");
   }
 }
-
-
 
 // offcanvas checkout code ********************************************
 
@@ -304,14 +333,14 @@ async function applyCoupon() {
 async function proceedToCheckout() {
   const userToken = localStorage.getItem("userToken");
   if (!userToken) {
-    if (typeof Swal !== 'undefined') {
+    if (typeof Swal !== "undefined") {
       Swal.fire({
         title: "Login Required",
         text: "Please login to proceed to checkout.",
         icon: "info",
         showCancelButton: true,
         confirmButtonText: "Login",
-        cancelButtonText: "Cancel"
+        cancelButtonText: "Cancel",
       }).then((result) => {
         if (result.isConfirmed) {
           openLoginModal();
@@ -323,7 +352,9 @@ async function proceedToCheckout() {
     return;
   }
 
-  const currentItems = Array.isArray(currentCartData.items) ? currentCartData.items : [];
+  const currentItems = Array.isArray(currentCartData.items)
+    ? currentCartData.items
+    : [];
   if (currentItems.length === 0) {
     if (typeof Swal !== "undefined") {
       Swal.fire("Cart is empty", "Please select item.", "warning");
@@ -339,7 +370,7 @@ async function proceedToCheckout() {
       Swal.fire(
         "Invalid price",
         "One or more items in your cart have no valid price (₹0). Remove them or contact support before checkout.",
-        "warning"
+        "warning",
       );
     } else {
       alert("Cannot checkout: cart contains items with zero price.");
@@ -352,9 +383,9 @@ async function proceedToCheckout() {
 
   try {
     const response = await fetch(`${CART_API_ROOT}/api/orders/checkout`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();
@@ -368,27 +399,38 @@ async function proceedToCheckout() {
     } else {
       if (isUserNotFoundMessage(data.message)) {
         localStorage.removeItem("userToken");
-        Swal.fire("Please login", "User not found. Please login.", "warning").then(() => {
+        Swal.fire(
+          "Please login",
+          "User not found. Please login.",
+          "warning",
+        ).then(() => {
           openLoginModal();
         });
         return;
       }
-      if (typeof Swal !== 'undefined') {
-        Swal.fire("Failed", data.message || "Unable to proceed to checkout.", "error");
+      if (typeof Swal !== "undefined") {
+        Swal.fire(
+          "Failed",
+          data.message || "Unable to proceed to checkout.",
+          "error",
+        );
       } else {
         alert(data.message || "Unable to proceed to checkout.");
       }
     }
   } catch (err) {
     console.error("Checkout error:", err);
-    if (typeof Swal !== 'undefined') {
-      Swal.fire("Error", "Something went wrong. Please try again later.", "error");
+    if (typeof Swal !== "undefined") {
+      Swal.fire(
+        "Error",
+        "Something went wrong. Please try again later.",
+        "error",
+      );
     } else {
       alert("Something went wrong. Please try again later.");
     }
   }
 }
-
 
 // offcanvas checkout code end  ********************************************
 
@@ -396,10 +438,10 @@ async function proceedToCheckout() {
 async function loadOffcanvasCart() {
   try {
     const activeCoupon = localStorage.getItem("appliedCoupon") || "";
-    const res = await fetch(API.list, { 
+    const res = await fetch(API.list, {
       method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify({ couponCode: activeCoupon })
+      body: JSON.stringify({ couponCode: activeCoupon }),
     });
     const data = await res.json();
     const items = data.items || [];
@@ -419,8 +461,9 @@ function renderOffcanvasCart(items) {
   list.innerHTML = "";
   let subtotal = 0;
 
-  items.forEach(item => {
-    const itemTotal = item.total || item.currentPrice || (item.price * item.quantity);
+  items.forEach((item) => {
+    const itemTotal =
+      item.total || item.currentPrice || item.price * item.quantity;
     subtotal += itemTotal;
 
     const li = `
@@ -518,6 +561,3 @@ document.addEventListener("click", async (e) => {
     await proceedToCheckout();
   }
 });
-
-
-
