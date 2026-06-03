@@ -100,18 +100,7 @@
                                         </form>
                                     </div>
 
-                                    <div class="text-md-start text-center">
-                                        <div class="qty-box h-100 qty-container quantity-box-2">
-                                            <button class="btn qty-btn qty-btn-minus" disabled="">
-                                                <i class="ri-subtract-line"></i>
-                                            </button>
-                                            <input type="number" readonly="" name="qty"
-                                                class="qty-input form-control input-qty" value="0">
-                                            <button class="btn qty-btn qty-btn-plus">
-                                                <i class="ri-add-line"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+                                    
 
                                     <div class="button-group d-lg-none" id="mobileButtonGroup">
                                         <button class="btn buy-btn-mobile theme-bg-color text-white" data-action="buy-now">

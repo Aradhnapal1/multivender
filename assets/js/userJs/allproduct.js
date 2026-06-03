@@ -1305,35 +1305,45 @@ function populateProduct(p) {
   }
 
   // Selected Options
-  const selectedOptionsEl = document.querySelector(
-    ".side-product-box .product-contain h4",
-  );
-  if (selectedOptionsEl) {
-    const firstSize = sizes[0] || "";
-    const firstColor = colors[0] || "";
-    selectedOptionsEl.innerText = `${firstSize}${firstSize && firstColor ? ", " : ""}${firstColor}`;
-    console.log("Updated selected options to:", selectedOptionsEl.innerText);
+  const sideProductContain = document.querySelector(".side-product-box .product-contain");
+  if (sideProductContain) {
+    let colorHtml = '';
+    if (colors.length > 0) {
+      colorHtml = `
+      <form class="select-package color-product mt-2">
+        ${colors.map((c, i) => `
+        <div class="form-check d-inline-block me-1">
+          <input class="form-check-input" type="text" name="sideColorRadio" id="sideColor${i}" ${i === 0 ? "checked" : ""} style="background-color: ${c};">
+          <label class="form-check-label bg-transparent" for="sideColor${i}"></label>
+        </div>
+        `).join("")}
+      </form>`;
+    }
+    
+    let sizeHtml = '';
+    if (sizes.length > 0) {
+        sizeHtml = `<div class="mt-2 text-muted" style="font-size: 14px;">Size: <strong class="text-dark">${sizes.join(", ")}</strong></div>`;
+    }
+
+    sideProductContain.innerHTML = `
+        <h4 class="name mb-2" style="font-size: 16px; margin-top: 0;">${p.name || ''}</h4>
+        ${colorHtml}
+        ${sizeHtml}
+    `;
   } else {
-    console.warn("Selected options element not found");
+    console.warn("Side product contain element not found");
   }
 
-  const h4 = document.querySelector(".total-price-box h4");
-
-  if (h4) {
-    // first text node (span se pehle jo price text hota hai)
-    const textNode = [...h4.childNodes].find(
-      (n) => n.nodeType === Node.TEXT_NODE,
-    );
-
-    if (textNode) {
-      textNode.nodeValue = `₹${pricing.finalPrice} `;
-    } else {
-      // agar text node na mile to naya insert kar do span se pehle
-      h4.insertBefore(
-        document.createTextNode(`₹${pricing.finalPrice} `),
-        h4.firstChild,
-      );
+  const totalPriceBox = document.querySelector(".total-price-box");
+  if (totalPriceBox) {
+    // Remove existing price heading if any to prevent duplicates on refresh
+    const existingPrice = totalPriceBox.querySelector('.product-price, h4');
+    if (existingPrice && !existingPrice.closest('.button-group')) {
+        existingPrice.remove();
     }
+    
+    const priceHtml = `<h5 class="product-price mb-3" style="font-size: 16px;">₹${pricing.finalPrice} ${pricing.hasDiscount ? `<del class="text-muted ms-2 fw-normal" style="font-size: 16px;">₹${pricing.strikePrice}</del>` : ""}</h5>`;
+    totalPriceBox.insertAdjacentHTML('afterbegin', priceHtml);
   } else {
     console.warn("Total price element not found");
   }
