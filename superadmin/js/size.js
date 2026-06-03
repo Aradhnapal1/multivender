@@ -35,7 +35,7 @@ async function loadSizes() {
                 <tr>
                      <td>${index + 1}</td> <!-- ✅ S.No -->                  
                     <td>${size.name}</td>
-                    <td>${size.description}</td>             
+                  
                     <td onclick="editSize('${size._id || size.id}')" style="cursor: pointer;">
                         <i class="mdi mdi-square-edit-outline text-dark fs-3"></i>
                     </td>
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const name = document.getElementById("sizeName").value.trim();
-        const description = document.getElementById("sizeDescription").value.trim();
+      
         const isActive = document.getElementById("isActive").checked;
 
         if (!name) {
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const payload = {
           name: name,
-          description: description,
+          
           isActive: isActive,
           isDeleted: false
         };
@@ -250,8 +250,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("sizeName").value = size.name || "";
 
       // ✅ PREFILL TEXTAREA
-      document.getElementById("sizeDescription").value =
-        size.description || "";
+  
 
       // ✅ PREFILL CHECKBOX
       const isActiveValue =
@@ -282,7 +281,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       const name = document.getElementById("sizeName").value.trim();
-      const description = document.getElementById("sizeDescription").value.trim();
+  
       const isActive = checkbox.checked;
 
       if (!name) {
@@ -292,7 +291,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const payload = {
         name,
-        description,
+     
         isActive,
         isDeleted: false
       };

@@ -39,11 +39,7 @@
                                 <input type="text" class="form-control" id="sizeName" name="sizeName"
                                     placeholder="Size Name">
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="sizeDescription">Description</label>
-                                <textarea class="form-control" id="sizeDescription" name="sizeDescription" rows="3"
-                                    placeholder="Enter description"></textarea>
-                            </div>
+                         
 
 
 

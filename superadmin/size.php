@@ -31,13 +31,7 @@
                                         <div class="col-sm-5">
                                             <a href="add-size.php" class="btn btn-dark"><i class="mdi mdi-plus-circle me-2"></i>  Add Size</a>
                                         </div>
-                                        <div class="col-sm-7">
-                                            <div class="text-sm-end">
-                                                <button type="button" class="btn btn-success me-1"><i class="mdi mdi-cog-outline"></i></button>
-                                                <button type="button" class="btn btn-light me-1">Import</button>
-                                                <button type="button" class="btn btn-light">Export</button>
-                                            </div>
-                                        </div><!-- end col-->
+                                      
                                     </div>
                                 </div><!-- end card-body-->
 
@@ -52,7 +46,7 @@
                                                 <th>Size Name</th>
                                               
                                              
-                                                <th>Description</th>
+                                              
                                               
                                                 <th>Edit</th>
                                                 <th>Delete</th>
