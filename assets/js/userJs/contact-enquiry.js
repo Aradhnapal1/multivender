@@ -1,4 +1,4 @@
-const ENQUIRY_API = "https://api.workarya.com/api/enquiry";
+const ENQUIRY_API = "https://api.workarya.com/api/enquiry/create-inquery";
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("contactEnquiryForm");
@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const email = document.getElementById("contactUsEmail")?.value.trim() || "";
         const phone = document.getElementById("contactUsPhone")?.value.trim() || "";
         const topicEl = document.getElementById("contactUsTopic");
-        const topic = topicEl?.value?.trim() || "";
+        const subject = topicEl?.value?.trim() || "";
         const message = document.getElementById("contactUsHelpMessage")?.value.trim() || "";
         const submitBtn = form.querySelector('button[type="submit"]');
 
-        if (!name || !email || !phone || !topic || !message) {
+        if (!name || !email || !phone || !subject || !message) {
             if (typeof Swal !== "undefined") {
                 Swal.fire("Required fields", "Please fill in all required fields.", "warning");
             } else {
@@ -24,14 +24,12 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const payload = {
-            name,
-            email,
-            phone,
-            topic,
-            message,
-            status: "NEW"
-        };
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("phone", phone);
+        formData.append("subject", subject);
+        formData.append("message", message);
 
         const originalText = submitBtn ? submitBtn.textContent : "";
         if (submitBtn) {
@@ -42,8 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const res = await fetch(ENQUIRY_API, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
+                body: formData
             });
 
             const data = await res.json().catch(() => ({}));
