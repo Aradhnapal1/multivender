@@ -253,7 +253,7 @@ if (function_exists('curl_init')) {
                     </div>
                 </div>
             </div>
-            <div class="custom-xxl-9">
+            <div class="custom-xxl-9" style="z-index:-9999;">
                 <div class="row g-0">
                     <div class="col-xl-8 col-12">
                         <a href="shop.php" class="banner-box b-left">

@@ -23,7 +23,7 @@
 
     <!-- Compare Section Start -->
     <section class="compare-section section-t-space">
-        <div class="custom-container">
+        <div class="                    ">
             <!-- Products fetched from /api/compare/list rendered by compare-notify.js -->
             <div id="compareContainer">
                 <div class="text-center py-5">
