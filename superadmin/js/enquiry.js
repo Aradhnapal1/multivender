@@ -104,7 +104,7 @@ window.viewEnquiry = async function (id) {
     modal.show();
 
     try {
-        const res = await fetch(`${ENQUIRY_API}/${encodeURIComponent(id)}`, {
+        const res = await fetch(`https://api.workarya.com/api/enquiry/get-by-id/${encodeURIComponent(id)}`, {
             headers: getAuthHeaders()
         });
         const json = await res.json().catch(() => ({}));
@@ -149,7 +149,7 @@ window.deleteEnquiry = async function (id) {
     if (!confirmDel.isConfirmed) return;
 
     try {
-        const res = await fetch(`${ENQUIRY_API}/${encodeURIComponent(id)}`, {
+        const res = await fetch(`https://api.workarya.com/api/enquiry/delete-enquiry/${encodeURIComponent(id)}`, {
             method: "DELETE",
             headers: getAuthHeaders()
         });
