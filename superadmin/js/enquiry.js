@@ -1,4 +1,4 @@
-const ENQUIRY_API = "https://api.workarya.com/api/enquiry";
+const ENQUIRY_API = "https://api.workarya.com/api/enquiry/all-enquery";
 
 function getEnquiryId(item) {
     return item?.id || item?._id || "";
